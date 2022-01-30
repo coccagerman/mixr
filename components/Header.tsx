@@ -1,6 +1,5 @@
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { useDrawerStatus } from '@react-navigation/drawer'
 import { DrawerActions } from '@react-navigation/native'
 
 import { StyleSheet, Text, View } from 'react-native'
@@ -14,7 +13,7 @@ const navigation = useNavigation()
     <View style={styles.container}>
         <Text style={styles.title} onPress={() => navigation.navigate('RegisterScreen')}>Mixr</Text>
         <View style={styles.iconContainer} >
-            <AntDesign name='user' style={styles.icon} size={30} color='white' onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
+            <AntDesign name='user' style={styles.icon} size={30} color='white' onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} />
         </View>
     </View>
   )

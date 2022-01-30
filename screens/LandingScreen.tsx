@@ -8,10 +8,7 @@ export default function LandingScreen({ navigation }: RootTabScreenProps<'Landin
 
       <Text style={styles.title}>Mixr</Text>
 
-      <Image
-        style={styles.icon}
-        source={Martini}
-      />
+      <Image style={styles.icon} source={Martini} />
 
       <Text style={styles.text}>Login or create your acount</Text>
 
