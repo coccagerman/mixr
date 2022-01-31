@@ -6,6 +6,10 @@ import LandingScreen from '../screens/LandingScreen'
 import LoginScreen from '../screens/LoginScreen'
 import RegisterScreen from '../screens/RegisterScreen'
 
+import ProfileScreen from '../screens/ProfileScreen'
+import CocktailDetailScreen from '../screens/CocktailDetailScreen'
+import PublishRecipeScreen from '../screens/PublishRecipeScreen'
+
 import Header from '../components/Header'
 import DrawerNavigator from './DrawerNavigator'
 
@@ -24,9 +28,9 @@ export default function Navigation() {
         <Stack.Screen name='RegisterScreen' component={RegisterScreen} options={{headerShown: false}} />
 
         <Stack.Screen name='HomeScreen' component={DrawerNavigator} options={{ header: () => <Header/> }} />
-        <Stack.Screen name='ProfileScreen' component={DrawerNavigator} options={{ header: () => <Header/> }} />
-        <Stack.Screen name='CocktailDetailScreen' component={DrawerNavigator} options={{ header: () => <Header/> }} />
-        <Stack.Screen name='PublishRecipeScreen' component={DrawerNavigator} options={{ header: () => <Header/> }} />
+        <Stack.Screen name='ProfileScreen' component={ProfileScreen} options={{ header: () => <Header/> }} />
+        <Stack.Screen name='CocktailDetailScreen' component={CocktailDetailScreen} options={{ header: () => <Header/> }} />
+        <Stack.Screen name='PublishRecipeScreen' component={PublishRecipeScreen} options={{ header: () => <Header/> }} />
       </Stack.Navigator>
     </NavigationContainer>
   )

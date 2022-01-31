@@ -11,7 +11,7 @@ const navigation = useNavigation()
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title} onPress={() => navigation.navigate('RegisterScreen')}>Mixr</Text>
+        <Text style={styles.title} onPress={() => navigation.navigate('HomeScreen')}>Mixr</Text>
         <View style={styles.iconContainer} >
             <AntDesign name='user' style={styles.icon} size={30} color='white' onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} />
         </View>

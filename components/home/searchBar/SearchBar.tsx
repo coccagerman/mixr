@@ -9,7 +9,7 @@ import { StyleSheet, View } from 'react-native'
 
 const Searchbar: React.FC = () => {
 
-const [search, setSearch] = useState('')
+const [search, setSearch] = useState<string>('')
 
 const updateSearch = (search: string) => setSearch(search)
   

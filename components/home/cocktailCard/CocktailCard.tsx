@@ -31,21 +31,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 5,
     margin: 10,
-    backgroundColor: '#dedede',
+    backgroundColor: '#DEDEDE',
     height: 220,
     width: 160,
-    borderBottomLeftRadius: 5,
-    borderBottomRightRadius: 5,
-    borderTopRightRadius: 5,
-    borderTopLeftRadius: 5
+    borderRadius: 5
   },
   image: {
       height: 150,
       width: 150,
-      borderBottomLeftRadius: 5,
-      borderBottomRightRadius: 5,
-      borderTopRightRadius: 5,
-      borderTopLeftRadius: 5
+      borderRadius: 5
   },
   title: {
     fontSize: 18,
