@@ -22,6 +22,8 @@ export type RootStackParamList = {
   ProfileScreen: undefined
   CocktailDetailScreen: undefined
   PublishRecipeScreen: undefined
+  FavoritesScreen: undefined
+  PublishedRecipesScreen: undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -37,6 +39,8 @@ export type RootTabParamList = {
   ProfileScreen: undefined
   CocktailDetailScreen: undefined
   PublishRecipeScreen: undefined
+  FavoritesScreen: undefined
+  PublishedRecipesScreen: undefined
   Header: undefined
 }
 
