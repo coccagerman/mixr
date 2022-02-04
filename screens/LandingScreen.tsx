@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import { RootTabScreenProps } from '../types'
+import { RootStackScreenProps } from '../types'
 import Martini from '../assets/images/martini.png'
 
-export default function LandingScreen({ navigation }: RootTabScreenProps<'LandingScreen'>) {
+export default function LandingScreen({ navigation }: RootStackScreenProps<'LandingScreen'>) {
   return (
     <View style={styles.container}>
 

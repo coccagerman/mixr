@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
-import { RootTabScreenProps } from '../types'
+import { RootStackScreenProps } from '../types'
 
-export default function LoginScreen({ navigation }: RootTabScreenProps<'LoginScreen'>) {
+export default function LoginScreen({ navigation }: RootStackScreenProps<'LoginScreen'>) {
   return (
     <View style={styles.container}>
     <Text style={styles.title}>Mixr</Text>
@@ -12,7 +12,7 @@ export default function LoginScreen({ navigation }: RootTabScreenProps<'LoginScr
     
     <TouchableOpacity
       style={styles.btnPrimary}
-      onPress={() => navigation.navigate('HomeScreen')}>
+      onPress={() => navigation.navigate('Search cocktails')}>
       <View style={styles.btnIconContainer}>
         <AntDesign style={styles.btnIcon} name='google' size={24} color='black' />
       </View>
@@ -21,7 +21,7 @@ export default function LoginScreen({ navigation }: RootTabScreenProps<'LoginScr
 
     <TouchableOpacity
       style={styles.btnPrimary}
-      onPress={() => navigation.navigate('HomeScreen')}>
+      onPress={() => navigation.navigate('Search cocktails')}>
       <View style={styles.btnIconContainer}>
         <AntDesign style={styles.btnIcon} name='facebook-square' size={24} color='black' />
       </View>
@@ -30,7 +30,7 @@ export default function LoginScreen({ navigation }: RootTabScreenProps<'LoginScr
 
     <TouchableOpacity
       style={styles.btnPrimary}
-      onPress={() => navigation.navigate('HomeScreen')}>
+      onPress={() => navigation.navigate('Search cocktails')}>
       <View style={styles.btnIconContainer}>
         <AntDesign style={styles.btnIcon} name='twitter' size={24} color='black' />
       </View>
@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation }: RootTabScreenProps<'LoginScr
 
     <TouchableOpacity
       style={styles.btnPrimary}
-      onPress={() => navigation.navigate('HomeScreen')}>
+      onPress={() => navigation.navigate('Search cocktails')}>
       <View style={styles.btnIconContainer}>
         <AntDesign style={styles.btnIcon} name='mail' size={24} color='black' />
       </View>

@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native'
 import { Input } from 'react-native-elements'
 
-export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'PublishRecipeScreen'>) {
+export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'Publish a recipe'>) {
 
   const [recipeName, setRecipeName] = useState<string>('')
   const [recipeDescription, setRecipeDescription] = useState<string>('')

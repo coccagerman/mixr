@@ -5,7 +5,7 @@ import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
 import MockProfilePicture from '../assets/images/mockProfilePicture.jpg'
 
-export default function ProfileScreen({ navigation }: RootTabScreenProps<'ProfileScreen'>) {
+export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
 
   const mockCocktails = [1,2,3,4]
 
@@ -32,7 +32,7 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
 
           <TouchableOpacity
             style={styles.btnPrimary}
-            onPress={() => navigation.navigate('FavoritesScreen')}>
+            onPress={() => navigation.navigate('Favorites')}>
             <Text style={styles.btnText}>See all favorites</Text>
           </TouchableOpacity>
         </View>
@@ -46,7 +46,7 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
 
           <TouchableOpacity
             style={styles.btnPrimary}
-            onPress={() => navigation.navigate('PublishedRecipesScreen')}>
+            onPress={() => navigation.navigate('Published recipes')}>
             <Text style={styles.btnText}>See all recipes</Text>
           </TouchableOpacity>
         </View>

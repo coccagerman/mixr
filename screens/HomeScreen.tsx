@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native'
 import Searchbar from '../components/home/searchBar/SearchBar'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
-export default function HomeScreen({ navigation }: RootTabScreenProps<'HomeScreen'>) {
+export default function HomeScreen({ navigation }: RootTabScreenProps<'Search cocktails'>) {
 
   const mockCocktails = [1,2,3,4,5,6,7,8,9,10]
 

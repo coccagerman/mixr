@@ -1,8 +1,3 @@
-/**
- * Learn more about using TypeScript with React Navigation:
- * https://reactnavigation.org/docs/typescript/
- */
-
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
@@ -18,12 +13,7 @@ export type RootStackParamList = {
   LandingScreen: undefined
   LoginScreen: undefined
   RegisterScreen: undefined
-  HomeScreen: undefined
-  ProfileScreen: undefined
-  CocktailDetailScreen: undefined
-  PublishRecipeScreen: undefined
-  FavoritesScreen: undefined
-  PublishedRecipesScreen: undefined
+  'Search cocktails': undefined
 }
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -32,16 +22,15 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 >
 
 export type RootTabParamList = {
-  LandingScreen: undefined
-  LoginScreen: undefined
-  RegisterScreen: undefined
-  HomeScreen: undefined
-  ProfileScreen: undefined
-  CocktailDetailScreen: undefined
-  PublishRecipeScreen: undefined
-  FavoritesScreen: undefined
-  PublishedRecipesScreen: undefined
+  PublicStack: undefined
   Header: undefined
+  'Search cocktails': undefined
+  Profile: undefined
+  'Publish a recipe': undefined
+  Favorites: undefined
+  'Published recipes': undefined
+  'Log out': undefined
+  CocktailDetailScreen: undefined
 }
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<

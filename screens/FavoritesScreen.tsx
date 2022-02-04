@@ -4,7 +4,7 @@ import { Text, StyleSheet, View } from 'react-native'
 
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
-export default function FavoritesScreen({ navigation }: RootTabScreenProps<'FavoritesScreen'>) {
+export default function FavoritesScreen({ navigation }: RootTabScreenProps<'Favorites'>) {
 
   const mockCocktails = [1,2,3,4,5,6,7,8,9,10]
 
