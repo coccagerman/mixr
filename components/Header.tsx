@@ -5,15 +5,17 @@ import { DrawerActions } from '@react-navigation/native'
 import { StyleSheet, Text, View } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
-const Header = () => {
+const Header:React.FC = () => {
 
 const navigation = useNavigation()
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title} onPress={() => navigation.navigate('HomeScreen')}>Mixr</Text>
+        <Text style={styles.title} onPress={() => navigation.navigate('Search cocktails')}>Mixr</Text>
         <View style={styles.iconContainer} >
-            <AntDesign name='user' style={styles.icon} size={30} color='white' onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())} />
+            <AntDesign name='user' style={styles.icon} size={30} color='white' onPress={() => {
+              navigation.dispatch(DrawerActions.toggleDrawer())
+              }} />
         </View>
     </View>
   )
