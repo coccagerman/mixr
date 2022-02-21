@@ -1,9 +1,78 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { RootStackScreenProps } from '../types'
 import { AntDesign } from '@expo/vector-icons'
 
-import { RootStackScreenProps } from '../types'
+import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth"
 
 export default function RegisterScreen({ navigation }: RootStackScreenProps<'RegisterScreen'>) {
+
+
+  const signInWithGoogle = () => {
+    const auth = getAuth() 
+    const provider = new GoogleAuthProvider()
+
+    signInWithPopup(auth, provider)
+      .then(result => {
+        // The signed-in user info.
+        const user = result.user
+        console.log(user)
+      }).catch(error => {
+        // Handle Errors here.
+        console.log(error)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      })
+  }
+
+  const signInWithFacebook = () => {
+    const auth = getAuth() 
+    const provider = new FacebookAuthProvider()
+
+    signInWithPopup(auth, provider)
+      .then(result => {
+        // The signed-in user info.
+        const user = result.user
+        console.log(user)
+      }).catch(error => {
+        // Handle Errors here.
+        console.log(error)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = FacebookAuthProvider.credentialFromError(error);
+        // ...
+      })
+  }
+
+  const signInWithTwitter = () => {
+    const auth = getAuth() 
+    const provider = new TwitterAuthProvider()
+
+    signInWithPopup(auth, provider)
+      .then(result => {
+        // The signed-in user info.
+        const user = result.user
+        console.log(user)
+      }).catch(error => {
+        // Handle Errors here.
+        console.log(error)
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = TwitterAuthProvider.credentialFromError(error);
+        // ...
+      })
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Mixr</Text>
@@ -12,7 +81,7 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
       
       <TouchableOpacity
         style={styles.btnPrimary}
-        onPress={() => navigation.navigate('Search cocktails')}>
+        onPress={() => signInWithGoogle()}>
         <View style={styles.btnIconContainer}>
           <AntDesign style={styles.btnIcon} name='google' size={24} color='black' />
         </View>
@@ -21,7 +90,7 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
 
       <TouchableOpacity
         style={styles.btnPrimary}
-        onPress={() => navigation.navigate('Search cocktails')}>
+        onPress={() => signInWithFacebook()}>
         <View style={styles.btnIconContainer}>
           <AntDesign style={styles.btnIcon} name='facebook-square' size={24} color='black' />
         </View>
@@ -30,20 +99,11 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
 
       <TouchableOpacity
         style={styles.btnPrimary}
-        onPress={() => navigation.navigate('Search cocktails')}>
+        onPress={() => signInWithTwitter()}>
         <View style={styles.btnIconContainer}>
           <AntDesign style={styles.btnIcon} name='twitter' size={24} color='black' />
         </View>
         <Text style={styles.btnText}>Register with Twitter</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.btnPrimary}
-        onPress={() => navigation.navigate('Search cocktails')}>
-        <View style={styles.btnIconContainer}>
-          <AntDesign style={styles.btnIcon} name='mail' size={24} color='black' />
-        </View>
-        <Text style={styles.btnText}>Register with email</Text>
       </TouchableOpacity>
     </View>
   )

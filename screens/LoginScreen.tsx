@@ -36,15 +36,6 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'LoginS
       </View>
       <Text style={styles.btnText}>Login with Twitter</Text>
     </TouchableOpacity>
-
-    <TouchableOpacity
-      style={styles.btnPrimary}
-      onPress={() => navigation.navigate('Search cocktails')}>
-      <View style={styles.btnIconContainer}>
-        <AntDesign style={styles.btnIcon} name='mail' size={24} color='black' />
-      </View>
-      <Text style={styles.btnText}>Login with email</Text>
-    </TouchableOpacity>
   </View>
 )
 }
