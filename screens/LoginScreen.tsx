@@ -91,7 +91,8 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<'LoginS
           profilePicture: user.photoURL,
           favoriteCocktails: [],
           likedCocktails: [],
-          about: ""
+          about: "",
+          id: user.uid
         }
         const docRef = await addDoc(collection(db, "mixrUsers"), newUser)
       }

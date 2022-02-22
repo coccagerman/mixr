@@ -90,7 +90,8 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
           profilePicture: user.photoURL,
           favoriteCocktails: [],
           likedCocktails: [],
-          about: ""
+          about: "",
+          id: user.uid
         }
         const docRef = await addDoc(collection(db, "mixrUsers"), newUser)
       }

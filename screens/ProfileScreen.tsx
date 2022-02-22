@@ -1,33 +1,110 @@
+import { useEffect, useState } from 'react'
+
 import { RootTabScreenProps } from '../types'
 
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
-import MockProfilePicture from '../assets/images/mockProfilePicture.jpg'
+import GenericAvatar from '../assets/images/genericAvatar.jpg'
+
+import { query, where, getDocs, collection } from 'firebase/firestore'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth, db } from '../services/firebase.config'
 
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
+  /* TODO - MOVE THIS TO A PROFILE CONTEXT */
+  const [user] = useAuthState(auth as any)
 
-  const mockCocktails = [1,2,3,4]
+  interface UserData {
+    userName: string,
+    profilePicture: string,
+    about: string,
+    email: string,
+    favoriteCocktails: Array<string>,
+    likedCocktails: Array<string>,
+    id: string
+  }
+
+  const [userData, setUserData] = useState<UserData | null>(null)
+
+  const fetchUserData = async (user: any) => {
+    try {
+      const q = query(collection(db, 'mixrUsers'), where('email', '==', user.email)) 
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setUserData(result[0])      
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {fetchUserData(user)}, [])
+  interface Cocktail {
+    name: string,
+    image: string,
+    description: string,
+    ingredients: Array<string>,
+    recipeSteps: Array<string>,
+    publisherId: string,
+    userLikes: Array<string>
+  }
+
+  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
+  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
+
+  const fetchFavoriteCocktails = async (userData: UserData | null) => {
+    try {
+      const q = query(collection(db, 'mixrCocktails'), where('id', 'in', userData?.favoriteCocktails))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => {result.push(doc.data())} )
+      setFavoriteCocktails(result)
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const fetchPublishedRecipes = async (user: any) => {
+    try {
+      const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user?.uid))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setPublishedRecipes(result)      
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => {
+    if (userData) {
+      fetchFavoriteCocktails(userData)
+      fetchPublishedRecipes(user)
+    }
+  }, [userData])
+  /* ====================================== */
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
 
           <View style={styles.profileHeader}>
-            <Image style={styles.profilePicture} source={MockProfilePicture} />
-            <Text style={styles.profileName}>John Hopkins</Text>
+            <Image style={styles.profilePicture} source={user ? { uri: user.photoURL } : GenericAvatar}/>
+            <Text style={styles.profileName}>{user?.displayName}</Text>
           </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>About me</Text>
-          <Text style={styles.contentText}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam finibus metus ut nisi dictum malesuada. Sed a viverra nibh. Cras posuere luctus nisl at auctor. Mauris a vulputate sapien. Vivamus sed sem odio. Suspendisse hendrerit sollicitudin justo, non dictum nisi consequat non.</Text>
+          <Text style={styles.contentText}>{userData ? userData.about : null}</Text>
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Favorites</Text>
 
           <View style={styles.cardsContainer}>
-            {mockCocktails.map((cocktail, i) => <CocktailCard key={i} navigation={navigation} />)}
+            {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
           </View>
 
           <TouchableOpacity
@@ -41,7 +118,7 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
           <Text style={styles.title}>Published recipes</Text>
 
           <View style={styles.cardsContainer}>
-            {mockCocktails.map((cocktail, i) => <CocktailCard key={i} navigation={navigation} />)}
+            {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
           </View>
 
           <TouchableOpacity
