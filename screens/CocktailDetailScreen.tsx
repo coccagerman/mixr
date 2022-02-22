@@ -13,20 +13,56 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
   const [isLiked, setIsLiked] = useState<boolean>(false)
   const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
+  interface User {
+    userName: string,
+    profilePicture: string,
+    id: string
+  }
+
+  const [user, setUser] = useState<User>(
+    {
+      userName: 'Facundo Perez',
+      profilePicture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
+      id: 'CwUqmmjvwdqkPFzeSbV9',
+    }
+  )
+
+  interface Cocktail {
+    name: string,
+    image: string,
+    description: string,
+    ingredients: Array<string>,
+    recipeSteps: Array<string>,
+    publisherId: string,
+    userLikes: Array<string>
+  }
+
+  const [cockTail, setCockTail] = useState<Cocktail>(
+    {
+      name: 'Old fashioned',
+      image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
+      description: 'A vintage cocktail with a sweet and bitter flavour',
+      ingredients: ['Whisky', 'Vermouth', 'Bitter', 'Orange'],
+      recipeSteps: ['Pour some whisky.', 'Then add double the ammount of vermouth.', 'A couple slashes of bitter.', 'And just a spring of orange to finish.'],
+      publisherId: 'CwUqmmjvwdqkPFzeSbV9',
+      userLikes: ['CwUqmmjvwdqkPFzeSbV9']
+    }
+  )
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Image style={styles.image} source={MockCocktail} />
 
-        <Text style={styles.title}>Old fashioned</Text>
+        <Text style={styles.title}>{cockTail.name}</Text>
 
         <View style={styles.publicationInfoContainer}>
           <View style={styles.publisherInfoContainer}>
             <View>
               <Text style={styles.publishedByText}>Published by:</Text>
-              <Text>John Hopkins</Text>
+              <Text>{user.userName}</Text>
             </View>
-            <Image style={styles.profilePicture} source={MockProfilePicture} />
+            <Image style={styles.profilePicture} source={{ uri: user.profilePicture }} />
           </View>
 
           <View style={styles.iconsContainer}>
@@ -42,25 +78,17 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Description</Text>
-          <Text style={styles.contentText}>The old fashioned is a fine cocktail to sip on a autumn evening. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam finibus metus ut nisi dictum malesuada. Sed a viverra nibh. Cras posuere luctus nisl at auctor. Mauris a vulputate sapien. Vivamus sed sem odio. Suspendisse hendrerit sollicitudin justo, non dictum nisi consequat non.</Text>
+          <Text style={styles.contentText}>{cockTail.description}</Text>
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Ingredients</Text>
-          <Text style={styles.contentText}>- Whisky</Text>
-          <Text style={styles.contentText}>- Vermouth</Text>
-          <Text style={styles.contentText}>- Bitter</Text>
-          <Text style={styles.contentText}>- Orange</Text>          
+          {cockTail.ingredients.map((ingredient, i) => <Text key={i} style={styles.contentText}>- {ingredient}</Text>)}        
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Recipe</Text>
-          <Text style={styles.contentText}>1- Suspendisse bibendum libero non tincidunt venenatis.</Text>
-          <Text style={styles.contentText}>2- Suspendisse bibendum libero non tincidunt venenatis.</Text>
-          <Text style={styles.contentText}>3- Suspendisse bibendum libero non tincidunt venenatis.</Text>
-          <Text style={styles.contentText}>4- Suspendisse bibendum libero non tincidunt venenatis.</Text>
-          <Text style={styles.contentText}>5- Suspendisse bibendum libero non tincidunt venenatis.</Text>
-          <Text style={styles.contentText}>6- Suspendisse bibendum libero non tincidunt venenatis.</Text>
+          {cockTail.recipeSteps.map((step, i) => <Text key={i} style={styles.contentText}>- {step}</Text>)}
         </View>
       </ScrollView>
     </SafeAreaView>

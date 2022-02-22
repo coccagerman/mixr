@@ -2,11 +2,13 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { RootStackScreenProps } from '../types'
 import { AntDesign } from '@expo/vector-icons'
 
-import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth"
+import { getAuth, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider } from 'firebase/auth'
+
+import { query, where, getDocs, collection, addDoc } from 'firebase/firestore'
+import { db } from '../services/firebase.config'
 
 export default function RegisterScreen({ navigation }: RootStackScreenProps<'RegisterScreen'>) {
-
-
+  /* TODO - MOVE THIS TO AUTH CONTEXT */
   const signInWithGoogle = () => {
     const auth = getAuth() 
     const provider = new GoogleAuthProvider()
@@ -15,7 +17,7 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
       .then(result => {
         // The signed-in user info.
         const user = result.user
-        console.log(user)
+        createUserIfDoesntExist(user)
       }).catch(error => {
         // Handle Errors here.
         console.log(error)
@@ -37,7 +39,7 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
       .then(result => {
         // The signed-in user info.
         const user = result.user
-        console.log(user)
+        createUserIfDoesntExist(user)
       }).catch(error => {
         // Handle Errors here.
         console.log(error)
@@ -59,7 +61,7 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
       .then(result => {
         // The signed-in user info.
         const user = result.user
-        console.log(user)
+        createUserIfDoesntExist(user)
       }).catch(error => {
         // Handle Errors here.
         console.log(error)
@@ -72,6 +74,32 @@ export default function RegisterScreen({ navigation }: RootStackScreenProps<'Reg
         // ...
       })
   }
+
+  const createUserIfDoesntExist = async (user: any) => {
+    try {
+      // Check if user already exists
+      const q = query(collection(db, "mixrUsers"), where("email", "==", user.email))      
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      // If not, create it
+      if (result.length === 0) {
+        const newUser = {
+          email: user.email,
+          userName: user.displayName,
+          profilePicture: user.photoURL,
+          favoriteCocktails: [],
+          likedCocktails: [],
+          about: ""
+        }
+        const docRef = await addDoc(collection(db, "mixrUsers"), newUser)
+      }
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  /* =============================== */
 
   return (
     <View style={styles.container}>

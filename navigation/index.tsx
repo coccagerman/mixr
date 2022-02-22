@@ -23,6 +23,8 @@ import { getAuth, signOut } from 'firebase/auth'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../services/firebase.config'
 
+import AuthContextProvider from '../context/AuthContextProvider'
+
 const Navigation: React.FC = () => {
 
   const Stack = createNativeStackNavigator<RootStackParamList>()

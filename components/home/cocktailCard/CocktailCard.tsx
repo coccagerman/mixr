@@ -3,22 +3,33 @@ import { AntDesign } from '@expo/vector-icons'
 
 import MockCocktail from '../../../assets/images/mockCocktail.jpg'
 
+
+interface Cocktail {
+  name: string,
+  image: string,
+  description: string,
+  ingredients: Array<string>,
+  recipeSteps: Array<string>,
+  publisherId: string,
+  userLikes: Array<string>
+}
 interface Props {
     navigation: any
+    cocktail: Cocktail
 }
 
-const Searchbar: React.FC<Props> = ({ navigation }) => {
+const Searchbar: React.FC<Props> = ({ cocktail, navigation }) => {
   
   return (
     <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('CocktailDetailScreen')}>
 
-        <Image style={styles.image} source={MockCocktail} />
+        <Image style={styles.image} source={{ uri: cocktail.image }} />
 
-        <Text style={styles.title}>Old fashioned</Text>
+        <Text style={styles.title}>{cocktail.name}</Text>
         
         <View style={styles.likesContainer} >
             <AntDesign name='like1' size={20} color='black' />
-            <Text style={styles.likesCount}>100</Text>
+            <Text style={styles.likesCount}>{cocktail.userLikes ? cocktail.userLikes.length : null}</Text>
         </View>
     </TouchableOpacity>
   )

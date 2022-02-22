@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { RootTabScreenProps } from '../types'
 
 import { StyleSheet, View } from 'react-native'
@@ -5,9 +7,36 @@ import { StyleSheet, View } from 'react-native'
 import Searchbar from '../components/home/searchBar/SearchBar'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
+import { collection, query, getDocs } from 'firebase/firestore'
+import { db } from '../services/firebase.config'
+
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Search cocktails'>) {
 
-  const mockCocktails = [1,2,3,4,5,6,7,8,9,10]
+  interface Cocktail {
+    name: string,
+    image: string,
+    description: string,
+    ingredients: Array<string>,
+    recipeSteps: Array<string>,
+    publisherId: string,
+    userLikes: Array<string>
+  }
+
+  const [cockTails, setCockTails] = useState<Array<Cocktail>>([])
+
+  const fetchCocktails = async () => {
+    try {
+      const q = query(collection(db, 'mixrCocktails'))
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setCockTails(result)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  useEffect(() => { fetchCocktails() }, [])
 
   return (
     <View style={styles.container}>
@@ -16,7 +45,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Search co
       </View>
 
       <View style={styles.cardsContainer}>
-        {mockCocktails.map((cocktail, i) => <CocktailCard key={i} navigation={navigation} />)}
+        {cockTails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
       </View>
     </View>
   )
