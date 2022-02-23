@@ -37,3 +37,22 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
   BottomTabScreenProps<RootTabParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
 >
+export interface Cocktail {
+  name: string,
+  image: string,
+  description: string,
+  ingredients: Array<string>,
+  recipeSteps: Array<string>,
+  publisherId: string,
+  userLikes: Array<string>
+}
+
+export interface UserData {
+  userName: string,
+  profilePicture: string,
+  about: string,
+  email: string,
+  favoriteCocktails: Array<string>,
+  likedCocktails: Array<string>,
+  id: string
+}

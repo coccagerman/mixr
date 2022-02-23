@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView } from 'react-n
 import { AntDesign } from '@expo/vector-icons'
 
 import MockCocktail from '../assets/images/mockCocktail.jpg'
-import MockProfilePicture from '../assets/images/mockProfilePicture.jpg'
+import GenericAvatar from '../assets/images/genericAvatar.jpg'
 import { useState } from 'react'
 
 
@@ -62,7 +62,7 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
               <Text style={styles.publishedByText}>Published by:</Text>
               <Text>{user.userName}</Text>
             </View>
-            <Image style={styles.profilePicture} source={{ uri: user.profilePicture }} />
+            <Image style={styles.profilePicture} source={user.profilePicture ? { uri: user.profilePicture } : GenericAvatar} />
           </View>
 
           <View style={styles.iconsContainer}>

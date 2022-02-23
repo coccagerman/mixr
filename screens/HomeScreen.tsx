@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { RootTabScreenProps } from '../types'
+import { RootTabScreenProps, Cocktail } from '../types'
 
 import { StyleSheet, View } from 'react-native'
 
@@ -11,17 +11,7 @@ import { collection, query, getDocs } from 'firebase/firestore'
 import { db } from '../services/firebase.config'
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Search cocktails'>) {
-
-  interface Cocktail {
-    name: string,
-    image: string,
-    description: string,
-    ingredients: Array<string>,
-    recipeSteps: Array<string>,
-    publisherId: string,
-    userLikes: Array<string>
-  }
-
+  
   const [cockTails, setCockTails] = useState<Array<Cocktail>>([])
 
   const fetchCocktails = async () => {

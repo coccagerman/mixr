@@ -1,18 +1,8 @@
 import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 
-import MockCocktail from '../../../assets/images/mockCocktail.jpg'
+import { Cocktail } from '../../../types'
 
-
-interface Cocktail {
-  name: string,
-  image: string,
-  description: string,
-  ingredients: Array<string>,
-  recipeSteps: Array<string>,
-  publisherId: string,
-  userLikes: Array<string>
-}
 interface Props {
     navigation: any
     cocktail: Cocktail

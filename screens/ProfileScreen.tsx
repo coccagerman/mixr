@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { RootTabScreenProps } from '../types'
+import { RootTabScreenProps, Cocktail, UserData } from '../types'
 
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
@@ -14,16 +14,6 @@ import { auth, db } from '../services/firebase.config'
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
   /* TODO - MOVE THIS TO A PROFILE CONTEXT */
   const [user] = useAuthState(auth as any)
-
-  interface UserData {
-    userName: string,
-    profilePicture: string,
-    about: string,
-    email: string,
-    favoriteCocktails: Array<string>,
-    likedCocktails: Array<string>,
-    id: string
-  }
 
   const [userData, setUserData] = useState<UserData | null>(null)
 
@@ -40,15 +30,6 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
   }
 
   useEffect(() => {fetchUserData(user)}, [])
-  interface Cocktail {
-    name: string,
-    image: string,
-    description: string,
-    ingredients: Array<string>,
-    recipeSteps: Array<string>,
-    publisherId: string,
-    userLikes: Array<string>
-  }
 
   const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
   const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
@@ -91,41 +72,53 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
       <ScrollView>
 
           <View style={styles.profileHeader}>
-            <Image style={styles.profilePicture} source={user ? { uri: user.photoURL } : GenericAvatar}/>
+            <Image style={styles.profilePicture} source={user ? { uri: user?.photoURL } : GenericAvatar}/>
             <Text style={styles.profileName}>{user?.displayName}</Text>
           </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>About me</Text>
-          <Text style={styles.contentText}>{userData ? userData.about : null}</Text>
+          <Text style={styles.contentText}>{userData ? userData.about : "The user hasn't completed this section yet."}</Text>
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Favorites</Text>
 
           <View style={styles.cardsContainer}>
-            {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
-          </View>
+            {favoriteCocktails.length > 0 ?
+              <>
+                {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
 
-          <TouchableOpacity
-            style={styles.btnPrimary}
-            onPress={() => navigation.navigate('Favorites')}>
-            <Text style={styles.btnText}>See all favorites</Text>
-          </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnPrimary}
+                  onPress={() => navigation.navigate('Favorites')}>
+                  <Text style={styles.btnText}>See all favorites</Text>
+                </TouchableOpacity>
+              </>
+              :
+              <Text>The user doesn't have any favorite recipes yet.</Text>
+            }
+          </View>
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Published recipes</Text>
 
           <View style={styles.cardsContainer}>
-            {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
-          </View>
+            {publishedRecipes.length > 0 ?
+              <>
+                {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
 
-          <TouchableOpacity
-            style={styles.btnPrimary}
-            onPress={() => navigation.navigate('Published recipes')}>
-            <Text style={styles.btnText}>See all recipes</Text>
-          </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.btnPrimary}
+                  onPress={() => navigation.navigate('Published recipes')}>
+                  <Text style={styles.btnText}>See all recipes</Text>
+                </TouchableOpacity>
+              </>
+              :
+              <Text>The user doesn't have any published recipes yet.</Text>
+            }
+          </View>
         </View>
 
       </ScrollView>
@@ -155,7 +148,7 @@ const styles = StyleSheet.create({
   profilePicture: {
     width: 100,
     height: 100,
-    borderRadius: 100/2,
+    borderRadius: 100/2
   },
   profileName: {
     fontSize: 30,
@@ -185,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#DEDEDE',
     padding: 5,
-    borderRadius: 5,
+    borderRadius: 5
   },
   btnText: {
     alignSelf: 'center',
