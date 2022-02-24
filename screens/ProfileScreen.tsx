@@ -1,63 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useContext } from 'react'
 
-import { RootTabScreenProps, Cocktail, UserData } from '../types'
+import { RootTabScreenProps, } from '../types'
+
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../services/firebase.config'
+
+import ProfileContext from '../context/ProfileContext'
 
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
-
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
-import { query, where, getDocs, collection } from 'firebase/firestore'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth, db } from '../services/firebase.config'
-
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
-  /* TODO - MOVE THIS TO A PROFILE CONTEXT */
+  // Todo - context functions break
+  const { userData, fetchUserData, fetchFavoriteCocktails, favoriteCocktails, fetchPublishedRecipes, publishedRecipes } = useContext(ProfileContext)
+
   const [user] = useAuthState(auth as any)
 
-  const [userData, setUserData] = useState<UserData | null>(null)
-
-  const fetchUserData = async (user: any) => {
-    try {
-      const q = query(collection(db, 'mixrUsers'), where('email', '==', user.email)) 
-      const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => result.push(doc.data()) )
-      setUserData(result[0])      
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
   useEffect(() => {fetchUserData(user)}, [])
-
-  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
-  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
-
-  const fetchFavoriteCocktails = async (userData: UserData | null) => {
-    try {
-      const q = query(collection(db, 'mixrCocktails'), where('id', 'in', userData?.favoriteCocktails))   
-      const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => {result.push(doc.data())} )
-      setFavoriteCocktails(result)
-
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const fetchPublishedRecipes = async (user: any) => {
-    try {
-      const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user?.uid))   
-      const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => result.push(doc.data()) )
-      setPublishedRecipes(result)      
-    } catch (err) {
-      console.error(err)
-    }
-  }
 
   useEffect(() => {
     if (userData) {
@@ -65,7 +25,6 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
       fetchPublishedRecipes(user)
     }
   }, [userData])
-  /* ====================================== */
 
   return (
     <SafeAreaView style={styles.container}>
