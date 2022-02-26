@@ -1,22 +1,31 @@
-import { useState } from 'react'
+import { useContext, useEffect } from 'react'
 
-import { RootTabScreenProps, Cocktail } from '../types'
+import ProfileContext from '../context/ProfileContext'
 
+import { RootTabScreenProps } from '../types'
+
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../services/firebase.config'
 import { Text, StyleSheet, View } from 'react-native'
 
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
 export default function PublishedRecipesScreen({ navigation }: RootTabScreenProps<'Published recipes'>) {
 
-  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
+/* TODO - Profile context functions break */
+const [user] = useAuthState(auth as any)
+
+const { publishedRecipes, fetchPublishedRecipes } = useContext(ProfileContext)
+
+useEffect(() => {fetchPublishedRecipes(user)}, [])
+/* ====================================== */
 
   return (
     <View style={styles.container}>
-        <Text style={styles.title}>Published recipes</Text>
-
+      <Text style={styles.title}>Published recipes</Text>
 
       <View style={styles.cardsContainer}>
-        {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+        {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
       </View>
     </View>
   )

@@ -1,7 +1,7 @@
 
 import ProfileContext from './ProfileContext'
 
-import { query, where, getDocs, collection, addDoc } from 'firebase/firestore'
+import { query, where, getDocs, collection } from 'firebase/firestore'
 import { db } from '../services/firebase.config'
 
 import { Cocktail, UserData } from '../types'
@@ -12,6 +12,8 @@ export default function ProfileContextProvider ({ children }: { children: any })
   
 
   const [userData, setUserData] = useState<UserData | null>(null)
+  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
+  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
 
   const fetchUserData = async (user: any) => {
     try {
@@ -24,9 +26,6 @@ export default function ProfileContextProvider ({ children }: { children: any })
       console.error(err)
     }
   }
-
-  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
-  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
 
   const fetchFavoriteCocktails = async (userData: UserData | null) => {
     try {
@@ -43,6 +42,7 @@ export default function ProfileContextProvider ({ children }: { children: any })
 
   const fetchPublishedRecipes = async (user: any) => {
     try {
+      console.log('fetchPublishedRecipes')
       const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user?.uid))   
       const querySnapshot = await getDocs(q)
       const result: any[] = []
@@ -53,9 +53,8 @@ export default function ProfileContextProvider ({ children }: { children: any })
     }
   }
 
-
   return (
-      <ProfileContext.Provider value={{ userData, fetchUserData, fetchFavoriteCocktails, favoriteCocktails, fetchPublishedRecipes, publishedRecipes }} >
+    <ProfileContext.Provider value={{ userData, favoriteCocktails, publishedRecipes, fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes  }} >
           {children}
       </ProfileContext.Provider>
   )

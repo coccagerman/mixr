@@ -1,30 +1,29 @@
 import { useEffect, useContext } from 'react'
+import ProfileContext from '../context/ProfileContext'
 
-import { RootTabScreenProps, } from '../types'
+import { RootTabScreenProps } from '../types'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../services/firebase.config'
-
-import ProfileContext from '../context/ProfileContext'
 
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
-  // Todo - context functions break
-  const { userData, fetchUserData, fetchFavoriteCocktails, favoriteCocktails, fetchPublishedRecipes, publishedRecipes } = useContext(ProfileContext)
-
+  
+  /* TODO - Profile context functions break */
   const [user] = useAuthState(auth as any)
 
-  useEffect(() => {fetchUserData(user)}, [])
+  const {userData, favoriteCocktails, publishedRecipes, fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes} = useContext(ProfileContext)
 
   useEffect(() => {
-    if (userData) {
-      fetchFavoriteCocktails(userData)
-      fetchPublishedRecipes(user)
-    }
-  }, [userData])
+    fetchUserData(user)
+    fetchPublishedRecipes(user)
+  }, [publishedRecipes])
+
+  useEffect(() => { if(userData) fetchFavoriteCocktails(userData) },[userData, favoriteCocktails])
+  /* ====================================== */
 
   return (
     <SafeAreaView style={styles.container}>
