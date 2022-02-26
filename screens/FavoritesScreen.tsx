@@ -26,7 +26,7 @@ export default function FavoritesScreen({ navigation }: RootTabScreenProps<'Favo
       <Text style={styles.title}>Favorite cocktails</Text>
 
       <View style={styles.cardsContainer}>
-        {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+        {favoriteCocktails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)}
       </View>
     </View>
   )

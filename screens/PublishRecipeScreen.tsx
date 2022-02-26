@@ -1,13 +1,16 @@
 import { RootTabScreenProps } from '../types'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import * as ImagePicker from 'expo-image-picker'
-
-import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native'
-import { Input } from 'react-native-elements'
 
 import { collection, addDoc } from "firebase/firestore"
 import { auth, db } from '../services/firebase.config'
 import { useAuthState } from 'react-firebase-hooks/auth'
+
+import { TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native'
+import { Input } from 'react-native-elements'
+
+import { Ionicons } from '@expo/vector-icons'
 
 export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'Publish a recipe'>) {
   
@@ -15,11 +18,18 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 
   const [recipeName, setRecipeName] = useState<string>('')
   const [recipeDescription, setRecipeDescription] = useState<string>('')
-  const [recipeIngredients, setRecipeIngredients] = useState<string>('')
-  const [recipeSteps, setRecipeSteps] = useState<string>('')
+  const [ingredient, setIngredient] = useState<string>('')
+  const [recipeIngredients, setRecipeIngredients] = useState<Array<string>>([])
+  const [step, setStep] = useState<string>('')
+  const [recipeSteps, setRecipeSteps] = useState<Array<string>>([])
+  
+  const [formHasErrors, setFormHasErrors] = useState<boolean>(false)
 
   type recipeImageType = { localUri: string } | null
   const [recipeImage, setRecipeImage] = useState<recipeImageType>(null)
+
+  const ingredientInput = useRef<null | TextInput>(null)
+  const stepInput = useRef<null | TextInput>(null)
 
   const openImagePickerAsync = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync()
@@ -35,8 +45,6 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 
     setRecipeImage({ localUri: pickerResult.uri })
   }
-
-  const [formHasErrors, setFormHasErrors] = useState<boolean>(false)
 
   const checkFormErrorsAndSubmit = () => {
     if (!recipeName || !recipeDescription || !recipeIngredients || !recipeSteps || !recipeImage) setFormHasErrors(true)
@@ -65,6 +73,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 
         <Text style={styles.title}>Publish a new recipe:</Text>
 
+        <Text style={styles.subtitle}>Name:</Text>
         <Input
           inputContainerStyle={styles.textInput}
           placeholder='Recipe name ...'
@@ -73,6 +82,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
           onChangeText={(text: string) => setRecipeName(text)} 
         />
 
+        <Text style={styles.subtitle}>Description:</Text>
         <Input
           inputContainerStyle={styles.textInput}
           placeholder='Description ...'
@@ -83,25 +93,63 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
           numberOfLines = {4} 
         />
 
+        <Text style={styles.subtitle}>Ingredients:</Text>
+        {recipeIngredients ? 
+          <View style={styles.ingredientsContainer}>
+            {recipeIngredients.map((item, i) => <Text key={i} style={styles.ingredients}>{item}</Text>)}
+          </View>
+        :
+          null
+        }
+        
         <Input
           inputContainerStyle={styles.textInput}
-          placeholder='Ingredients ...'
+          placeholder='Ingredient ...'
           errorStyle={{ color: 'red' }}
           errorMessage={formHasErrors && !recipeIngredients ? 'Please provide the recipe ingredients' : undefined}
-          onChangeText={(text: string) => setRecipeIngredients(text)}
+          onChangeText={(text: string) => setIngredient(text)}
           multiline = {true}
-          numberOfLines = {4}
+          ref={ingredientInput}
         />
+
+        <TouchableOpacity onPress={() => {
+          if (ingredient) {
+            setRecipeIngredients([... recipeIngredients, ingredient])
+            ingredientInput.current?.clear()
+            setIngredient('')
+          }
+        }}>
+          <Ionicons name="add-circle" size={34} color="black" />
+        </TouchableOpacity>
+        
+        <Text style={styles.subtitle}>Recipe:</Text>
+        {recipeSteps ?
+          <View style={styles.stepsContainer}>
+            {recipeSteps.map((item, i) => <Text key={i} style={styles.steps}>{i+1}- {item}</Text>)}
+          </View>
+        :
+          null
+        }
 
         <Input
           inputContainerStyle={styles.textInput}
-          placeholder='Recipe steps ...'
+          placeholder='Recipe step ...'
           errorStyle={{ color: 'red' }}
           errorMessage={formHasErrors && !recipeSteps ? 'Please provide the recipe steps' : undefined}
-          onChangeText={(text: string) => setRecipeSteps(text)}
+          onChangeText={(text: string) => setStep(text)}
           multiline = {true}
-          numberOfLines = {4} 
+          ref={stepInput}
         />
+
+        <TouchableOpacity onPress={() => {
+          if (step) {
+            setRecipeSteps([... recipeSteps, step])
+            stepInput.current?.clear()
+            setStep('')
+          }
+        }}>
+          <Ionicons name="add-circle" size={34} color="black" />
+        </TouchableOpacity>
 
         { recipeImage ?
           <View style={styles.container}>
@@ -148,6 +196,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     fontWeight: 'bold'
   },
+  subtitle: {
+    fontSize: 20,
+    margin: 10,
+    fontWeight: 'bold'
+  },
   textInput: {
     padding: 3,
     backgroundColor: 'white',
@@ -184,5 +237,23 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     borderRadius: 10,
     marginTop: 10
+  },
+  ingredientsContainer: {
+    flexWrap:'wrap',
+    flexDirection: 'row'
+  },
+  ingredients: {
+    backgroundColor: '#DEDEDE',
+    borderRadius: 5,
+    padding: 5,
+    margin: 5
+  },
+  stepsContainer: {
+  },
+  steps: {
+    backgroundColor: '#DEDEDE',
+    borderRadius: 5,
+    padding: 5,
+    margin: 5
   }
 })

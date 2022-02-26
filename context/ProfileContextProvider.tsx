@@ -11,7 +11,7 @@ import { useState } from 'react'
 export default function ProfileContextProvider ({ children }: { children: any }) {
   
 
-  const [userData, setUserData] = useState<UserData | null>(null)
+  const [userData, setUserData] = useState<UserData | null | any>('menso')
   const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
   const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
 
@@ -42,7 +42,6 @@ export default function ProfileContextProvider ({ children }: { children: any })
 
   const fetchPublishedRecipes = async (user: any) => {
     try {
-      console.log('fetchPublishedRecipes')
       const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user?.uid))   
       const querySnapshot = await getDocs(q)
       const result: any[] = []

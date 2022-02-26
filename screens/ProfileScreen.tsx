@@ -12,28 +12,27 @@ import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
   
-  /* TODO - Profile context functions break */
   const [user] = useAuthState(auth as any)
 
   const {userData, favoriteCocktails, publishedRecipes, fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes} = useContext(ProfileContext)
 
-  useEffect(() => {
-    fetchUserData(user)
-    fetchPublishedRecipes(user)
-  }, [publishedRecipes])
+  useEffect(() => { fetchUserData(user) }, [])
+  
+  useEffect(() => { fetchPublishedRecipes(user) }, [])
 
-  useEffect(() => { if(userData) fetchFavoriteCocktails(userData) },[userData, favoriteCocktails])
-  /* ====================================== */
+  useEffect(() => { if(userData) fetchFavoriteCocktails(userData) },[userData])
 
   return (
     <SafeAreaView style={styles.container}>
+
       <ScrollView>
 
-          <View style={styles.profileHeader}>
-            <Image style={styles.profilePicture} source={user ? { uri: user?.photoURL } : GenericAvatar}/>
-            <Text style={styles.profileName}>{user?.displayName}</Text>
-          </View>
+        <View style={styles.profileHeader}>
+          <Image style={styles.profilePicture} source={user ? { uri: user?.photoURL } : GenericAvatar}/>
+          <Text style={styles.profileName}>{user?.displayName}</Text>
+        </View>
 
+        {/* TODO - Add edit option for about section */}
         <View style={styles.contentSection}>
           <Text style={styles.title}>About me</Text>
           <Text style={styles.contentText}>{userData ? userData.about : "The user hasn't completed this section yet."}</Text>
@@ -45,7 +44,11 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
           <View style={styles.cardsContainer}>
             {favoriteCocktails.length > 0 ?
               <>
-                {favoriteCocktails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+                {favoriteCocktails.length > 4 ?
+                  favoriteCocktails.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                  :
+                  favoriteCocktails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                }
 
                 <TouchableOpacity
                   style={styles.btnPrimary}
@@ -65,7 +68,11 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
           <View style={styles.cardsContainer}>
             {publishedRecipes.length > 0 ?
               <>
-                {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+                {publishedRecipes.length > 4 ?
+                  publishedRecipes.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                  :
+                  publishedRecipes.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                }
 
                 <TouchableOpacity
                   style={styles.btnPrimary}

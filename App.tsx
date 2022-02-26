@@ -3,6 +3,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import useCachedResources from './hooks/useCachedResources'
 import Navigation from './navigation'
 import AuthContextProvider from './context/AuthContextProvider'
+import ProfileContextProvider from './context/ProfileContextProvider'
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
@@ -12,9 +13,11 @@ export default function App() {
   } else {
     return (
       <AuthContextProvider>
-        <SafeAreaProvider>
-          <Navigation />
-        </SafeAreaProvider>
+        <ProfileContextProvider>
+          <SafeAreaProvider>
+            <Navigation />
+          </SafeAreaProvider>
+        </ProfileContextProvider>
       </AuthContextProvider>
     )
   }

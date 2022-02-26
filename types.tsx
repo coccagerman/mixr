@@ -38,6 +38,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
   NativeStackScreenProps<RootStackParamList>
 >
 export interface Cocktail {
+  id: string,
   name: string,
   image: string,
   description: string,

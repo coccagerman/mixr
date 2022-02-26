@@ -35,7 +35,7 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Search co
       </View>
 
       <View style={styles.cardsContainer}>
-        {cockTails.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+        {cockTails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)}
       </View>
     </View>
   )

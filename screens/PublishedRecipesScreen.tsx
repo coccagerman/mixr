@@ -25,7 +25,7 @@ useEffect(() => {fetchPublishedRecipes(user)}, [])
       <Text style={styles.title}>Published recipes</Text>
 
       <View style={styles.cardsContainer}>
-        {publishedRecipes.map((cocktail, i) => <CocktailCard key={i} cocktail={cocktail} navigation={navigation} />)}
+        {publishedRecipes.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)}
       </View>
     </View>
   )

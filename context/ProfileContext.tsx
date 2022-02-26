@@ -14,9 +14,9 @@ const defaultState = {
     userData: null,
     favoriteCocktails: [],
     publishedRecipes: [],
-    fetchUserData: (user: any) => Promise,
-    fetchFavoriteCocktails: (userData: UserData | null) => Promise,
-    fetchPublishedRecipes: (user: any) => Promise
+    fetchUserData: async (user: any) => {},
+    fetchFavoriteCocktails: async (userData: UserData | null) => {},
+    fetchPublishedRecipes: async (user: any) => {}
 }
 
 const ProfileContext = createContext<ProfileContext>(defaultState)
