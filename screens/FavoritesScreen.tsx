@@ -12,14 +12,12 @@ import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
 export default function FavoritesScreen({ navigation }: RootTabScreenProps<'Favorites'>) {
 
-  /* TODO - Profile context functions break */
   const {userData, favoriteCocktails, fetchUserData, fetchFavoriteCocktails} = useContext(ProfileContext)
 
   const [user] = useAuthState(auth as any)
 
   useEffect(() => {if(!userData) fetchUserData(user)}, [])
   useEffect(() => {if(userData && !favoriteCocktails) fetchFavoriteCocktails(userData)}, [userData])
-  /* ====================================== */
   
   return (
     <View style={styles.container}>

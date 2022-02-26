@@ -22,6 +22,8 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
 
   useEffect(() => { if(userData) fetchFavoriteCocktails(userData) },[userData])
 
+  /* TODO - Need to re fetch faves and recipes each time an item is added */
+
   return (
     <SafeAreaView style={styles.container}>
 

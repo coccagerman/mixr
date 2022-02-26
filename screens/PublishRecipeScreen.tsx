@@ -28,6 +28,8 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
   type recipeImageType = { localUri: string } | null
   const [recipeImage, setRecipeImage] = useState<recipeImageType>(null)
 
+  const nameInput = useRef<null | TextInput>(null)
+  const descriptionInput = useRef<null | TextInput>(null)
   const ingredientInput = useRef<null | TextInput>(null)
   const stepInput = useRef<null | TextInput>(null)
 
@@ -60,7 +62,21 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
           userLikes: [],
           publisherId: user?.uid,
           id: new Date().valueOf()
-        }).then(() => navigation.navigate('Profile'))
+        }).then(() => {
+          setRecipeName('')
+          nameInput.current?.clear()
+          setRecipeDescription('')
+          descriptionInput.current?.clear()
+          setIngredient('')
+          ingredientInput.current?.clear()
+          setRecipeIngredients([])
+          stepInput.current?.clear()
+          setStep('')
+          setRecipeSteps([])
+          setFormHasErrors(false)
+          setRecipeImage(null)
+          navigation.navigate('Profile')
+        })
       } catch (err) {
         console.error(err)
       }
@@ -79,7 +95,8 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
           placeholder='Recipe name ...'
           errorStyle={{ color: 'red' }}
           errorMessage={formHasErrors && !recipeName ? 'Please provide a recipe name' : undefined}
-          onChangeText={(text: string) => setRecipeName(text)} 
+          onChangeText={(text: string) => setRecipeName(text)}
+          ref={nameInput}
         />
 
         <Text style={styles.subtitle}>Description:</Text>
@@ -90,7 +107,8 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
           errorMessage={formHasErrors && !recipeDescription ? 'Please provide a recipe description' : undefined}
           onChangeText={(text: string) => setRecipeDescription(text)}
           multiline = {true}
-          numberOfLines = {4} 
+          numberOfLines = {4}
+          ref={descriptionInput}
         />
 
         <Text style={styles.subtitle}>Ingredients:</Text>

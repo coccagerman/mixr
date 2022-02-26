@@ -12,13 +12,11 @@ import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 
 export default function PublishedRecipesScreen({ navigation }: RootTabScreenProps<'Published recipes'>) {
 
-/* TODO - Profile context functions break */
-const [user] = useAuthState(auth as any)
+  const [user] = useAuthState(auth as any)
 
-const { publishedRecipes, fetchPublishedRecipes } = useContext(ProfileContext)
+  const { publishedRecipes, fetchPublishedRecipes } = useContext(ProfileContext)
 
-useEffect(() => {fetchPublishedRecipes(user)}, [])
-/* ====================================== */
+  useEffect(() => {fetchPublishedRecipes(user)}, [])
 
   return (
     <View style={styles.container}>
