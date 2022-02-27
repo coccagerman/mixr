@@ -11,7 +11,7 @@ interface Props {
 const Searchbar: React.FC<Props> = ({ cocktail, navigation }) => {
   
   return (
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('CocktailDetailScreen')}>
+    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('CocktailDetailScreen', { cocktailId: cocktail.id, publisherId: cocktail.publisherId })}>
 
         <Image style={styles.image} source={{ uri: cocktail.image }} />
 

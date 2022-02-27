@@ -25,6 +25,13 @@ import { auth } from '../services/firebase.config'
 
 const Navigation: React.FC = () => {
 
+  /* TODO 
+    - Configure log out
+    - Style drawer navigator
+    - In drawer nagivator, make log out a button that doesn't redirect or redirects to homescreen
+    - When in cocktail detail screen, no option should be highlighted
+   */
+
   const Stack = createNativeStackNavigator<RootStackParamList>()
   const Drawer = createDrawerNavigator<RootTabParamList>()
 

@@ -1,68 +1,83 @@
-import { RootTabScreenProps } from '../types'
+import { useEffect, useState } from 'react'
+import {useRoute} from '@react-navigation/native'
+
+import { RootTabScreenProps, Cocktail, UserData } from '../types'
 
 import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView } from 'react-native'
+
+import { query, where, getDocs, collection } from 'firebase/firestore'
+import { db } from '../services/firebase.config'
+
 import { AntDesign } from '@expo/vector-icons'
-
-import MockCocktail from '../assets/images/mockCocktail.jpg'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
-import { useState } from 'react'
-
 
 export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<'CocktailDetailScreen'>) {
 
+  /* TODO 
+    - Set like and add to favorites functionality
+    - Set navigate to profile functionality
+  */
+ 
+  const route: any = useRoute()
+  const { cocktailId, publisherId } = route.params
+  
+  const [cocktail, setCocktail] = useState<Cocktail | null>(null)
+  const [publisher, setPublisher] = useState<UserData | null>(null)
   const [isLiked, setIsLiked] = useState<boolean>(false)
   const [isFavorite, setIsFavorite] = useState<boolean>(false)
 
-  interface User {
-    userName: string,
-    profilePicture: string,
-    id: string
+  const fetchCocktailData = async (cocktailId: string) => {
+    try {
+      const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setCocktail(result[0])      
+
+    } catch (err) {
+      console.error(err)
+    }
   }
 
-  const [user, setUser] = useState<User>(
-    {
-      userName: 'Facundo Perez',
-      profilePicture: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-      id: 'CwUqmmjvwdqkPFzeSbV9',
+  const fetchPublisherData = async (publisherId: string) => {
+    try {
+      const q = query(collection(db, 'mixrUsers'), where('id', '==', publisherId)) 
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setPublisher(result[0])      
+    } catch (err) {
+      console.error(err)
     }
-  )
-
-  interface Cocktail {
-    name: string,
-    image: string,
-    description: string,
-    ingredients: Array<string>,
-    recipeSteps: Array<string>,
-    publisherId: string,
-    userLikes: Array<string>
   }
 
-  const [cockTail, setCockTail] = useState<Cocktail>(
-    {
-      name: 'Old fashioned',
-      image: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADMAAAAzCAYAAAA6oTAqAAAAEXRFWHRTb2Z0d2FyZQBwbmdjcnVzaEB1SfMAAABQSURBVGje7dSxCQBACARB+2/ab8BEeQNhFi6WSYzYLYudDQYGBgYGBgYGBgYGBgYGBgZmcvDqYGBgmhivGQYGBgYGBgYGBgYGBgYGBgbmQw+P/eMrC5UTVAAAAABJRU5ErkJggg==',
-      description: 'A vintage cocktail with a sweet and bitter flavour',
-      ingredients: ['Whisky', 'Vermouth', 'Bitter', 'Orange'],
-      recipeSteps: ['Pour some whisky.', 'Then add double the ammount of vermouth.', 'A couple slashes of bitter.', 'And just a spring of orange to finish.'],
-      publisherId: 'CwUqmmjvwdqkPFzeSbV9',
-      userLikes: ['CwUqmmjvwdqkPFzeSbV9']
-    }
-  )
+  useEffect(() => {
+    fetchCocktailData(cocktailId)
+    fetchPublisherData(publisherId)
+  }, [])
+
+  console.log('cocktailId ' + cocktailId)
+  console.log('publisherId ' + publisherId)
+
+  console.log('cocktail')
+  console.log(cocktail)
+  console.log('publisher')
+  console.log(publisher)
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Image style={styles.image} source={MockCocktail} />
+        <Image style={styles.image} source={{ uri: cocktail?.image }} />
 
-        <Text style={styles.title}>{cockTail.name}</Text>
+        <Text style={styles.title}>{cocktail?.name}</Text>
 
         <View style={styles.publicationInfoContainer}>
           <View style={styles.publisherInfoContainer}>
             <View>
               <Text style={styles.publishedByText}>Published by:</Text>
-              <Text>{user.userName}</Text>
+              <Text>{publisher?.userName}</Text>
             </View>
-            <Image style={styles.profilePicture} source={user.profilePicture ? { uri: user.profilePicture } : GenericAvatar} />
+            <Image style={styles.profilePicture} source={publisher?.profilePicture ? { uri: publisher?.profilePicture } : GenericAvatar} />
           </View>
 
           <View style={styles.iconsContainer}>
@@ -78,17 +93,25 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Description</Text>
-          <Text style={styles.contentText}>{cockTail.description}</Text>
+          <Text style={styles.contentText}>{cocktail?.description}</Text>
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Ingredients</Text>
-          {cockTail.ingredients.map((ingredient, i) => <Text key={i} style={styles.contentText}>- {ingredient}</Text>)}        
+          {cocktail ? 
+            cocktail?.ingredients.map((ingredient, i) => <Text key={i} style={styles.contentText}>- {ingredient}</Text>)
+            :
+            null
+          }        
         </View>
 
         <View style={styles.contentSection}>
           <Text style={styles.title}>Recipe</Text>
-          {cockTail.recipeSteps.map((step, i) => <Text key={i} style={styles.contentText}>- {step}</Text>)}
+          {cocktail ?
+            cocktail?.recipeSteps.map((step, i) => <Text key={i} style={styles.contentText}>{i+1}) {step}</Text>)
+            :
+            null
+          }
         </View>
       </ScrollView>
     </SafeAreaView>

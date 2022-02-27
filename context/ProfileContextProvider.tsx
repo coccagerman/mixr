@@ -7,11 +7,9 @@ import { db } from '../services/firebase.config'
 import { Cocktail, UserData } from '../types'
 import { useState } from 'react'
 
-
 export default function ProfileContextProvider ({ children }: { children: any }) {
   
-
-  const [userData, setUserData] = useState<UserData | null | any>('menso')
+  const [userData, setUserData] = useState<UserData | null>(null)
   const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
   const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
 
