@@ -3,9 +3,9 @@ import {useRoute} from '@react-navigation/native'
 
 import { RootTabScreenProps, Cocktail, UserData } from '../types'
 
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView } from 'react-native'
+import { StyleSheet, TouchableOpacity, Text, View, Image, SafeAreaView, ScrollView } from 'react-native'
 
-import { query, where, getDocs, collection } from 'firebase/firestore'
+import { query, where, getDocs, collection, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { db } from '../services/firebase.config'
 
 import { AntDesign } from '@expo/vector-icons'
@@ -15,7 +15,7 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
 
   /* TODO 
     - Set like and add to favorites functionality
-    - Set navigate to profile functionality
+    - Add loader to render until all is fetched
   */
  
   const route: any = useRoute()
@@ -23,8 +23,8 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
   
   const [cocktail, setCocktail] = useState<Cocktail | null>(null)
   const [publisher, setPublisher] = useState<UserData | null>(null)
-  const [isLiked, setIsLiked] = useState<boolean>(false)
-  const [isFavorite, setIsFavorite] = useState<boolean>(false)
+  const [isLiked, setIsLiked] = useState<boolean | null>(null)
+  const [isFavorite, setIsFavorite] = useState<boolean | null>(null)
 
   const fetchCocktailData = async (cocktailId: string) => {
     try {
@@ -32,8 +32,9 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
       const querySnapshot = await getDocs(q)
       const result: any[] = []
       querySnapshot.forEach(doc => result.push(doc.data()) )
-      setCocktail(result[0])      
+      setCocktail(result[0])
 
+      setIsLiked(result[0].userLikes.indexOf(publisherId) !== -1)
     } catch (err) {
       console.error(err)
     }
@@ -45,7 +46,49 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
       const querySnapshot = await getDocs(q)
       const result: any[] = []
       querySnapshot.forEach(doc => result.push(doc.data()) )
-      setPublisher(result[0])      
+      setPublisher(result[0])
+
+      setIsFavorite(result[0].favoriteCocktails.indexOf(cocktailId) !== -1)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const toggleLike = async () => {
+    try {
+      const docRef = doc(db, 'mixrCocktails', cocktailId)
+      /* const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) ) */
+
+      if (!isLiked) {
+        await updateDoc(docRef, { userLikes: arrayUnion(publisherId) })
+        setIsLiked(true)
+      } else {
+        await updateDoc(docRef, { userLikes: arrayRemove(publisherId) })
+        setIsLiked(false)
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const toggleFavorite = async () => {
+    try {
+      const docRef = doc(db, 'mixrUsers', publisherId)
+      /* const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) ) */
+
+      if (!isFavorite) {
+        await updateDoc(docRef, { favoriteCocktails: arrayUnion(cocktailId) })
+        setIsFavorite(true)
+      } else {
+        await updateDoc(docRef, { favoriteCocktails: arrayRemove(cocktailId) })
+        setIsFavorite(false)
+      }
     } catch (err) {
       console.error(err)
     }
@@ -54,15 +97,7 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
   useEffect(() => {
     fetchCocktailData(cocktailId)
     fetchPublisherData(publisherId)
-  }, [])
-
-  console.log('cocktailId ' + cocktailId)
-  console.log('publisherId ' + publisherId)
-
-  console.log('cocktail')
-  console.log(cocktail)
-  console.log('publisher')
-  console.log(publisher)
+  }, [cocktailId, publisherId])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,21 +107,21 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
         <Text style={styles.title}>{cocktail?.name}</Text>
 
         <View style={styles.publicationInfoContainer}>
-          <View style={styles.publisherInfoContainer}>
+          <TouchableOpacity style={styles.publisherInfoContainer} onPress={() => navigation.navigate('Profile', { userParam: publisher })}>
             <View>
-              <Text style={styles.publishedByText}>Published by:</Text>
-              <Text>{publisher?.userName}</Text>
+                <Text style={styles.publishedByText}>Published by:</Text>
+                <Text>{publisher?.userName}</Text>
             </View>
             <Image style={styles.profilePicture} source={publisher?.profilePicture ? { uri: publisher?.profilePicture } : GenericAvatar} />
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.iconsContainer}>
             <View style={styles.likesContainer} >
-                <AntDesign name={isLiked ? 'like1' : 'like2'} size={28} color='black' onPress={() => setIsLiked(!isLiked)} />
-                <Text style={styles.likesCount}>{isLiked ? '101' : '100'}</Text>
+              <AntDesign name={isLiked ? 'like1' : 'like2'} size={28} color='black' onPress={() => toggleLike()} />
+              <Text style={styles.likesCount}>{cocktail?.userLikes.length}</Text>
             </View>
 
-            <AntDesign style={styles.heartIcon} name={isFavorite ? 'heart' : 'hearto'} size={28} color='black' onPress={() => setIsFavorite(!isFavorite)} />
+            <AntDesign style={styles.heartIcon} name={isFavorite ? 'heart' : 'hearto'} size={28} color='black' onPress={() => toggleFavorite()} />
           </View>
 
         </View>

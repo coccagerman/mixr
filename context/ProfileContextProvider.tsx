@@ -25,6 +25,18 @@ export default function ProfileContextProvider ({ children }: { children: any })
     }
   }
 
+  const fetchPublishedRecipes = async (user: any) => {
+    try {
+      const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user.uid ? user.uid : user.id))   
+      const querySnapshot = await getDocs(q)
+      const result: any[] = []
+      querySnapshot.forEach(doc => result.push(doc.data()) )
+      setPublishedRecipes(result)      
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   const fetchFavoriteCocktails = async (userData: UserData | null) => {
     try {
       const q = query(collection(db, 'mixrCocktails'), where('id', 'in', userData?.favoriteCocktails))   
@@ -33,18 +45,6 @@ export default function ProfileContextProvider ({ children }: { children: any })
       querySnapshot.forEach(doc => {result.push(doc.data())} )
       setFavoriteCocktails(result)
 
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const fetchPublishedRecipes = async (user: any) => {
-    try {
-      const q = query(collection(db, 'mixrCocktails'), where('publisherId', '==', user?.uid))   
-      const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => result.push(doc.data()) )
-      setPublishedRecipes(result)      
     } catch (err) {
       console.error(err)
     }

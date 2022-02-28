@@ -74,7 +74,7 @@ const Navigation: React.FC = () => {
         :
         (<>
           <Drawer.Screen name='Search cocktails' component={HomeScreen} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Profile' component={ProfileScreen} options={{ header: () => <Header/> }} />
+          <Drawer.Screen name='Profile' component={ProfileScreen} initialParams={{ userParam: null }} options={{ header: () => <Header/> }} />
           <Drawer.Screen name='Publish a recipe' component={PublishRecipeScreen} options={{ header: () => <Header/> }} />
           <Drawer.Screen name='Favorites' component={FavoritesScreen} options={{ header: () => <Header/> }} />
           <Drawer.Screen name='Published recipes' component={PublishedRecipesScreen} options={{ header: () => <Header/> }} />

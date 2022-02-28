@@ -1,4 +1,6 @@
 import { useEffect, useContext } from 'react'
+import {useRoute} from '@react-navigation/native'
+
 import ProfileContext from '../context/ProfileContext'
 
 import { RootTabScreenProps } from '../types'
@@ -11,18 +13,31 @@ import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
+
+  const route: any = useRoute()
+  const { userParam } = route.params
   
   const [user] = useAuthState(auth as any)
 
   const {userData, favoriteCocktails, publishedRecipes, fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes} = useContext(ProfileContext)
 
-  useEffect(() => { fetchUserData(user) }, [])
+  useEffect(() => {
+    if (userParam) {
+      fetchUserData(userParam)
+      fetchPublishedRecipes(userParam)
+    } else {
+      fetchUserData(user)
+      fetchPublishedRecipes(user)
+    }
+  }, [userParam])
   
-  useEffect(() => { fetchPublishedRecipes(user) }, [])
+  useEffect(() => { if (userData) fetchFavoriteCocktails(userData) },[userData])
 
-  useEffect(() => { if(userData) fetchFavoriteCocktails(userData) },[userData])
-
-  /* TODO - Need to re fetch faves and recipes each time an item is added */
+  /* TODO
+    - Need to re fetch faves and recipes each time an item is added
+    - Render loader until content is fetched
+    - Add edit option for about section
+  */
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,11 +45,10 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
       <ScrollView>
 
         <View style={styles.profileHeader}>
-          <Image style={styles.profilePicture} source={user ? { uri: user?.photoURL } : GenericAvatar}/>
-          <Text style={styles.profileName}>{user?.displayName}</Text>
+          <Image style={styles.profilePicture} source={userData?.profilePicture ? { uri: userData.profilePicture } : GenericAvatar}/>
+          <Text style={styles.profileName}>{userData?.userName}</Text>
         </View>
 
-        {/* TODO - Add edit option for about section */}
         <View style={styles.contentSection}>
           <Text style={styles.title}>About me</Text>
           <Text style={styles.contentText}>{userData ? userData.about : "The user hasn't completed this section yet."}</Text>

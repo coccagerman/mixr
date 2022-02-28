@@ -25,7 +25,7 @@ export type RootTabParamList = {
   PublicStack: undefined
   Header: undefined
   'Search cocktails': undefined
-  Profile: undefined
+  Profile: any
   'Publish a recipe': undefined
   Favorites: undefined
   'Published recipes': undefined
