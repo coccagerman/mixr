@@ -3,8 +3,8 @@ import {UserData , Cocktail} from '../types'
 
 interface ProfileContext {
     userData: UserData | null,
-    favoriteCocktails: Array<Cocktail>,
-    publishedRecipes: Array<Cocktail>,
+    favoriteCocktails: Array<Cocktail> | null,
+    publishedRecipes: Array<Cocktail> | null,
     fetchUserData: (user: any) => Promise<void>,
     fetchFavoriteCocktails: (userData: UserData | null) => Promise<void>,
     fetchPublishedRecipes: (user: any) => Promise<void>,

@@ -3,7 +3,7 @@ import {useRoute} from '@react-navigation/native'
 
 import { RootTabScreenProps, Cocktail, UserData } from '../types'
 
-import { StyleSheet, TouchableOpacity, Text, View, Image, SafeAreaView, ScrollView } from 'react-native'
+import { ActivityIndicator, StyleSheet, TouchableOpacity, Text, View, Image, SafeAreaView, ScrollView } from 'react-native'
 
 import { query, where, getDocs, collection, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { db } from '../services/firebase.config'
@@ -15,8 +15,7 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
 
   /* TODO 
     - Set like and add to favorites functionality
-    - Add loader to render until all is fetched
-  */
+W  */
  
   const route: any = useRoute()
   const { cocktailId, publisherId } = route.params
@@ -101,54 +100,58 @@ export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <Image style={styles.image} source={{ uri: cocktail?.image }} />
+      {!cocktail || !publisher ? 
+        <ActivityIndicator size='large' color='#E51C27' />
+        :
+        <ScrollView>
+          <Image style={styles.image} source={{ uri: cocktail?.image }} />
 
-        <Text style={styles.title}>{cocktail?.name}</Text>
+          <Text style={styles.title}>{cocktail?.name}</Text>
 
-        <View style={styles.publicationInfoContainer}>
-          <TouchableOpacity style={styles.publisherInfoContainer} onPress={() => navigation.navigate('Profile', { userParam: publisher })}>
-            <View>
-                <Text style={styles.publishedByText}>Published by:</Text>
-                <Text>{publisher?.userName}</Text>
+          <View style={styles.publicationInfoContainer}>
+            <TouchableOpacity style={styles.publisherInfoContainer} onPress={() => navigation.navigate('Profile', { userParam: publisher })}>
+              <View>
+                  <Text style={styles.publishedByText}>Published by:</Text>
+                  <Text>{publisher?.userName}</Text>
+              </View>
+              <Image style={styles.profilePicture} source={publisher?.profilePicture ? { uri: publisher?.profilePicture } : GenericAvatar} />
+            </TouchableOpacity>
+
+            <View style={styles.iconsContainer}>
+              <View style={styles.likesContainer} >
+                <AntDesign name={isLiked ? 'like1' : 'like2'} size={28} color='black' onPress={() => toggleLike()} />
+                <Text style={styles.likesCount}>{cocktail?.userLikes.length}</Text>
+              </View>
+
+              <AntDesign style={styles.heartIcon} name={isFavorite ? 'heart' : 'hearto'} size={28} color='black' onPress={() => toggleFavorite()} />
             </View>
-            <Image style={styles.profilePicture} source={publisher?.profilePicture ? { uri: publisher?.profilePicture } : GenericAvatar} />
-          </TouchableOpacity>
 
-          <View style={styles.iconsContainer}>
-            <View style={styles.likesContainer} >
-              <AntDesign name={isLiked ? 'like1' : 'like2'} size={28} color='black' onPress={() => toggleLike()} />
-              <Text style={styles.likesCount}>{cocktail?.userLikes.length}</Text>
-            </View>
-
-            <AntDesign style={styles.heartIcon} name={isFavorite ? 'heart' : 'hearto'} size={28} color='black' onPress={() => toggleFavorite()} />
           </View>
 
-        </View>
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>Description</Text>
+            <Text style={styles.contentText}>{cocktail?.description}</Text>
+          </View>
 
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>Description</Text>
-          <Text style={styles.contentText}>{cocktail?.description}</Text>
-        </View>
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>Ingredients</Text>
+            {cocktail ? 
+              cocktail?.ingredients.map((ingredient, i) => <Text key={i} style={styles.contentText}>- {ingredient}</Text>)
+              :
+              null
+            }        
+          </View>
 
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>Ingredients</Text>
-          {cocktail ? 
-            cocktail?.ingredients.map((ingredient, i) => <Text key={i} style={styles.contentText}>- {ingredient}</Text>)
-            :
-            null
-          }        
-        </View>
-
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>Recipe</Text>
-          {cocktail ?
-            cocktail?.recipeSteps.map((step, i) => <Text key={i} style={styles.contentText}>{i+1}) {step}</Text>)
-            :
-            null
-          }
-        </View>
-      </ScrollView>
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>Recipe</Text>
+            {cocktail ?
+              cocktail?.recipeSteps.map((step, i) => <Text key={i} style={styles.contentText}>{i+1}) {step}</Text>)
+              :
+              null
+            }
+          </View>
+        </ScrollView>
+      }
     </SafeAreaView>
   )
 }

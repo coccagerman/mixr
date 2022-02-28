@@ -8,7 +8,7 @@ import { RootTabScreenProps } from '../types'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../services/firebase.config'
 
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, SafeAreaView, ScrollView, Image, TouchableOpacity } from 'react-native'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
@@ -35,74 +35,76 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
 
   /* TODO
     - Need to re fetch faves and recipes each time an item is added
-    - Render loader until content is fetched
     - Add edit option for about section
   */
 
   return (
     <SafeAreaView style={styles.container}>
+      {!userData || !favoriteCocktails || !publishedRecipes ? 
+        <ActivityIndicator size='large' color='#E51C27' />
+        :
+        <ScrollView>
 
-      <ScrollView>
-
-        <View style={styles.profileHeader}>
-          <Image style={styles.profilePicture} source={userData?.profilePicture ? { uri: userData.profilePicture } : GenericAvatar}/>
-          <Text style={styles.profileName}>{userData?.userName}</Text>
-        </View>
-
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>About me</Text>
-          <Text style={styles.contentText}>{userData ? userData.about : "The user hasn't completed this section yet."}</Text>
-        </View>
-
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>Favorites</Text>
-
-          <View style={styles.cardsContainer}>
-            {favoriteCocktails.length > 0 ?
-              <>
-                {favoriteCocktails.length > 4 ?
-                  favoriteCocktails.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
-                  :
-                  favoriteCocktails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
-                }
-
-                <TouchableOpacity
-                  style={styles.btnPrimary}
-                  onPress={() => navigation.navigate('Favorites')}>
-                  <Text style={styles.btnText}>See all favorites</Text>
-                </TouchableOpacity>
-              </>
-              :
-              <Text>The user doesn't have any favorite recipes yet.</Text>
-            }
+          <View style={styles.profileHeader}>
+            <Image style={styles.profilePicture} source={userData?.profilePicture ? { uri: userData.profilePicture } : GenericAvatar}/>
+            <Text style={styles.profileName}>{userData?.userName}</Text>
           </View>
-        </View>
 
-        <View style={styles.contentSection}>
-          <Text style={styles.title}>Published recipes</Text>
-
-          <View style={styles.cardsContainer}>
-            {publishedRecipes.length > 0 ?
-              <>
-                {publishedRecipes.length > 4 ?
-                  publishedRecipes.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
-                  :
-                  publishedRecipes.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
-                }
-
-                <TouchableOpacity
-                  style={styles.btnPrimary}
-                  onPress={() => navigation.navigate('Published recipes')}>
-                  <Text style={styles.btnText}>See all recipes</Text>
-                </TouchableOpacity>
-              </>
-              :
-              <Text>The user doesn't have any published recipes yet.</Text>
-            }
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>About me</Text>
+            <Text style={styles.contentText}>{userData ? userData.about : "The user hasn't completed this section yet."}</Text>
           </View>
-        </View>
 
-      </ScrollView>
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>Favorites</Text>
+
+            <View style={styles.cardsContainer}>
+              {favoriteCocktails.length > 0 ?
+                <>
+                  {favoriteCocktails.length > 4 ?
+                    favoriteCocktails.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    :
+                    favoriteCocktails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                  }
+
+                  <TouchableOpacity
+                    style={styles.btnPrimary}
+                    onPress={() => navigation.navigate('Favorites')}>
+                    <Text style={styles.btnText}>See all favorites</Text>
+                  </TouchableOpacity>
+                </>
+                :
+                <Text>The user doesn't have any favorite recipes yet.</Text>
+              }
+            </View>
+          </View>
+
+          <View style={styles.contentSection}>
+            <Text style={styles.title}>Published recipes</Text>
+
+            <View style={styles.cardsContainer}>
+              {publishedRecipes.length > 0 ?
+                <>
+                  {publishedRecipes.length > 4 ?
+                    publishedRecipes.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    :
+                    publishedRecipes.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                  }
+
+                  <TouchableOpacity
+                    style={styles.btnPrimary}
+                    onPress={() => navigation.navigate('Published recipes')}>
+                    <Text style={styles.btnText}>See all recipes</Text>
+                  </TouchableOpacity>
+                </>
+                :
+                <Text>The user doesn't have any published recipes yet.</Text>
+              }
+            </View>
+          </View>
+
+        </ScrollView>
+      }
     </SafeAreaView>
   )
 }

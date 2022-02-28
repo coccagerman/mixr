@@ -7,7 +7,7 @@ import { auth, db } from '../services/firebase.config'
 import { useAuthState } from 'react-firebase-hooks/auth'
 
 import { TextInput } from 'react-native'
-import { StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Image, SafeAreaView, ScrollView } from 'react-native'
 import { Input } from 'react-native-elements'
 
 import { Ionicons } from '@expo/vector-icons'
@@ -24,6 +24,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
   const [recipeSteps, setRecipeSteps] = useState<Array<string>>([])
   
   const [formHasErrors, setFormHasErrors] = useState<boolean>(false)
+  const [showLoader, setShowLoader] = useState<boolean>(false)
 
   type recipeImageType = { localUri: string } | null
   const [recipeImage, setRecipeImage] = useState<recipeImageType>(null)
@@ -53,6 +54,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
     else {
       setFormHasErrors(false)
       try {
+        setShowLoader(true)
         addDoc(collection(db, 'mixrCocktails'), {
           name: recipeName,
           description: recipeDescription,
@@ -75,6 +77,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
             setRecipeSteps([])
             setFormHasErrors(false)
             setRecipeImage(null)
+            setShowLoader(false)
             navigation.navigate('Profile')
         })
       } catch (err) {
@@ -85,119 +88,123 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 
   return (
     <SafeAreaView>
-      <ScrollView contentContainerStyle={styles.container}>
+      {showLoader ? 
+        <ActivityIndicator style={styles.loader} size='large' color='#E51C27' />
+      :
+        <ScrollView contentContainerStyle={styles.container}>
 
-        <Text style={styles.title}>Publish a new recipe:</Text>
+          <Text style={styles.title}>Publish a new recipe:</Text>
 
-        <Text style={styles.subtitle}>Name:</Text>
-        <Input
-          inputContainerStyle={styles.textInput}
-          placeholder='Recipe name ...'
-          errorStyle={{ color: 'red' }}
-          errorMessage={formHasErrors && !recipeName ? 'Please provide a recipe name' : undefined}
-          onChangeText={(text: string) => setRecipeName(text)}
-          ref={nameInput}
-        />
+          <Text style={styles.subtitle}>Name:</Text>
+          <Input
+            inputContainerStyle={styles.textInput}
+            placeholder='Recipe name ...'
+            errorStyle={{ color: 'red' }}
+            errorMessage={formHasErrors && !recipeName ? 'Please provide a recipe name' : undefined}
+            onChangeText={(text: string) => setRecipeName(text)}
+            ref={nameInput}
+          />
 
-        <Text style={styles.subtitle}>Description:</Text>
-        <Input
-          inputContainerStyle={styles.textInput}
-          placeholder='Description ...'
-          errorStyle={{ color: 'red' }}
-          errorMessage={formHasErrors && !recipeDescription ? 'Please provide a recipe description' : undefined}
-          onChangeText={(text: string) => setRecipeDescription(text)}
-          multiline = {true}
-          numberOfLines = {4}
-          ref={descriptionInput}
-        />
+          <Text style={styles.subtitle}>Description:</Text>
+          <Input
+            inputContainerStyle={styles.textInput}
+            placeholder='Description ...'
+            errorStyle={{ color: 'red' }}
+            errorMessage={formHasErrors && !recipeDescription ? 'Please provide a recipe description' : undefined}
+            onChangeText={(text: string) => setRecipeDescription(text)}
+            multiline = {true}
+            numberOfLines = {4}
+            ref={descriptionInput}
+          />
 
-        <Text style={styles.subtitle}>Ingredients:</Text>
-        {recipeIngredients ? 
-          <View style={styles.ingredientsContainer}>
-            {recipeIngredients.map((item, i) => <Text key={i} style={styles.ingredients}>{item}</Text>)}
-          </View>
-        :
-          null
-        }
-        
-        <Input
-          inputContainerStyle={styles.textInput}
-          placeholder='Ingredient ...'
-          errorStyle={{ color: 'red' }}
-          errorMessage={formHasErrors && !recipeIngredients ? 'Please provide the recipe ingredients' : undefined}
-          onChangeText={(text: string) => setIngredient(text)}
-          multiline = {true}
-          ref={ingredientInput}
-        />
-
-        <TouchableOpacity onPress={() => {
-          if (ingredient) {
-            setRecipeIngredients([... recipeIngredients, ingredient])
-            ingredientInput.current?.clear()
-            setIngredient('')
-          }
-        }}>
-          <Ionicons name="add-circle" size={34} color="black" />
-        </TouchableOpacity>
-        
-        <Text style={styles.subtitle}>Recipe:</Text>
-        {recipeSteps ?
-          <View style={styles.stepsContainer}>
-            {recipeSteps.map((item, i) => <Text key={i} style={styles.steps}>{i+1}- {item}</Text>)}
-          </View>
-        :
-          null
-        }
-
-        <Input
-          inputContainerStyle={styles.textInput}
-          placeholder='Recipe step ...'
-          errorStyle={{ color: 'red' }}
-          errorMessage={formHasErrors && !recipeSteps ? 'Please provide the recipe steps' : undefined}
-          onChangeText={(text: string) => setStep(text)}
-          multiline = {true}
-          ref={stepInput}
-        />
-
-        <TouchableOpacity onPress={() => {
-          if (step) {
-            setRecipeSteps([... recipeSteps, step])
-            stepInput.current?.clear()
-            setStep('')
-          }
-        }}>
-          <Ionicons name="add-circle" size={34} color="black" />
-        </TouchableOpacity>
-
-        { recipeImage ?
-          <View style={styles.container}>
-            <Image
-              source={{ uri: recipeImage.localUri }}
-              style={styles.thumbnail}
-            />
-          </View>
+          <Text style={styles.subtitle}>Ingredients:</Text>
+          {recipeIngredients ? 
+            <View style={styles.ingredientsContainer}>
+              {recipeIngredients.map((item, i) => <Text key={i} style={styles.ingredients}>{item}</Text>)}
+            </View>
           :
-          null
-        }
+            null
+          }
+          
+          <Input
+            inputContainerStyle={styles.textInput}
+            placeholder='Ingredient ...'
+            errorStyle={{ color: 'red' }}
+            errorMessage={formHasErrors && !recipeIngredients ? 'Please provide the recipe ingredients' : undefined}
+            onChangeText={(text: string) => setIngredient(text)}
+            multiline = {true}
+            ref={ingredientInput}
+          />
 
-        <TouchableOpacity onPress={openImagePickerAsync} style={[styles.btn, styles.btnSecondary]}>
-          <Text style={styles.btnText}>Pick a photo</Text>
-        </TouchableOpacity>
-
-        {
-          formHasErrors && !recipeImage ?
-          <Text style={{ color: 'red' }}>Please provide a photo for the recipe</Text>
+          <TouchableOpacity onPress={() => {
+            if (ingredient) {
+              setRecipeIngredients([... recipeIngredients, ingredient])
+              ingredientInput.current?.clear()
+              setIngredient('')
+            }
+          }}>
+            <Ionicons name="add-circle" size={34} color="black" />
+          </TouchableOpacity>
+          
+          <Text style={styles.subtitle}>Recipe:</Text>
+          {recipeSteps ?
+            <View style={styles.stepsContainer}>
+              {recipeSteps.map((item, i) => <Text key={i} style={styles.steps}>{i+1}- {item}</Text>)}
+            </View>
           :
-          null          
-        }
+            null
+          }
 
-        <TouchableOpacity
-          style={[styles.btn, styles.btnPrimary]}
-          onPress={() => checkFormErrorsAndSubmit()}>
-          <Text style={styles.btnText}>Submit</Text>
-        </TouchableOpacity>
+          <Input
+            inputContainerStyle={styles.textInput}
+            placeholder='Recipe step ...'
+            errorStyle={{ color: 'red' }}
+            errorMessage={formHasErrors && !recipeSteps ? 'Please provide the recipe steps' : undefined}
+            onChangeText={(text: string) => setStep(text)}
+            multiline = {true}
+            ref={stepInput}
+          />
 
-      </ScrollView>
+          <TouchableOpacity onPress={() => {
+            if (step) {
+              setRecipeSteps([... recipeSteps, step])
+              stepInput.current?.clear()
+              setStep('')
+            }
+          }}>
+            <Ionicons name="add-circle" size={34} color="black" />
+          </TouchableOpacity>
+
+          { recipeImage ?
+            <View style={styles.container}>
+              <Image
+                source={{ uri: recipeImage.localUri }}
+                style={styles.thumbnail}
+              />
+            </View>
+            :
+            null
+          }
+
+          <TouchableOpacity onPress={openImagePickerAsync} style={[styles.btn, styles.btnSecondary]}>
+            <Text style={styles.btnText}>Pick a photo</Text>
+          </TouchableOpacity>
+
+          {
+            formHasErrors && !recipeImage ?
+            <Text style={{ color: 'red' }}>Please provide a photo for the recipe</Text>
+            :
+            null          
+          }
+
+          <TouchableOpacity
+            style={[styles.btn, styles.btnPrimary]}
+            onPress={() => checkFormErrorsAndSubmit()}>
+            <Text style={styles.btnText}>Submit</Text>
+          </TouchableOpacity>
+
+        </ScrollView>
+      }
     </SafeAreaView>
   )
 }
@@ -273,5 +280,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 5,
     margin: 5
+  },
+  loader: {
+    marginTop: 375
   }
 })

@@ -10,8 +10,8 @@ import { useState } from 'react'
 export default function ProfileContextProvider ({ children }: { children: any }) {
   
   const [userData, setUserData] = useState<UserData | null>(null)
-  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail>>([])
-  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail>>([])
+  const [favoriteCocktails, setFavoriteCocktails] = useState<Array<Cocktail> | null>(null)
+  const [publishedRecipes, setPublishedRecipes] = useState<Array<Cocktail> | null>(null)
 
   const fetchUserData = async (user: any) => {
     try {

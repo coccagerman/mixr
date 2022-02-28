@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { RootTabScreenProps, Cocktail } from '../types'
 
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 
 import Searchbar from '../components/home/searchBar/SearchBar'
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
@@ -12,7 +12,7 @@ import { db } from '../services/firebase.config'
 
 export default function HomeScreen({ navigation }: RootTabScreenProps<'Search cocktails'>) {
   
-  const [cockTails, setCockTails] = useState<Array<Cocktail>>([])
+  const [cockTails, setCockTails] = useState<Array<Cocktail> | null>(null)
 
   const fetchCocktails = async () => {
     try {
@@ -33,13 +33,19 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Search co
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchbarContainer}>
-        <Searchbar />
-      </View>
+      {!cockTails ? 
+        <ActivityIndicator style={styles.loader} size='large' color='#E51C27' />
+        :
+        <>
+          <View style={styles.searchbarContainer}>
+            <Searchbar />
+          </View>
 
-      <View style={styles.cardsContainer}>
-        {cockTails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)}
-      </View>
+          <View style={styles.cardsContainer}>
+            {cockTails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)}
+          </View>
+        </>
+      }
     </View>
   )
 }
@@ -58,5 +64,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  loader: {
+    marginTop: 375
   }
 })
