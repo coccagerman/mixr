@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator, DrawerItem } from '@react-navigation/drawer'
 
@@ -30,6 +30,7 @@ const Navigation: React.FC = () => {
     - Style drawer navigator
     - In drawer nagivator, make log out a button that doesn't redirect or redirects to homescreen
     - When in cocktail detail screen, no option should be highlighted
+    - On landing, register and login screens, drawer shouldn't open
    */
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
@@ -69,7 +70,12 @@ const Navigation: React.FC = () => {
           <Drawer.Screen
             name="PublicStack"
             component={loginStack}
-            options={{headerShown: false}}
+            // options={{headerShown: false}}
+            options={({ route }) => {
+              const routeName = getFocusedRouteNameFromRoute(route)
+              if (routeName === "LandingScreen" || routeName === "LoginScreen" || routeName === "RegisterScreen") return ({swipeEnabled: false, gestureEnabled: false})
+              else return ({swipeEnabled: true, gestureEnabled: true})
+          }} 
           /> )
         :
         (<>
