@@ -18,6 +18,10 @@ export default function PublishedRecipesScreen({ navigation }: RootTabScreenProp
 
   useEffect(() => {fetchPublishedRecipes(user)}, [])
 
+  /* TODO:
+    - This screen has to work fetching info for any user
+  */
+
   return (
     <View style={styles.container}>
       {!publishedRecipes ? 

@@ -15,7 +15,7 @@ const Searchbar: React.FC<Props> = ({ cocktail, navigation }) => {
 
         <Image style={styles.image} source={{ uri: cocktail.image }} />
 
-        <Text style={styles.title}>{cocktail.name}</Text>
+        <Text style={styles.title}>{cocktail.name.length > 14 ? `${cocktail.name.slice(0, 14) + '...'}` : cocktail.name}</Text>
         
         <View style={styles.likesContainer} >
             <AntDesign name='like1' size={20} color='black' />

@@ -18,6 +18,10 @@ export default function FavoritesScreen({ navigation }: RootTabScreenProps<'Favo
 
   useEffect(() => {if(!userData) fetchUserData(user)}, [])
   useEffect(() => {if(userData && !favoriteCocktails) fetchFavoriteCocktails(userData)}, [userData])
+
+  /* TODO:
+    - This screen has to work fetching info for any user
+  */
   
   return (
     <View style={styles.container}>

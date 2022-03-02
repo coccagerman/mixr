@@ -8,14 +8,15 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity, Text, View, Image, Saf
 import { query, where, getDocs, collection, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { db } from '../services/firebase.config'
 
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../services/firebase.config'
+
 import { AntDesign } from '@expo/vector-icons'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
 export default function CocktailDetailScreen({ navigation }: RootTabScreenProps<'CocktailDetailScreen'>) {
 
-  /* TODO 
-    - Set like and add to favorites functionality
-W  */
+  const [user] = useAuthState(auth as any)
  
   const route: any = useRoute()
   const { cocktailId, publisherId } = route.params
@@ -52,21 +53,45 @@ W  */
       console.error(err)
     }
   }
+  
+  const updateLikes = async (documentId: string) => {
+    try {
+      const documentRef = doc(db, 'mixrCocktails', documentId)
+    
+      if (!isLiked) {
+        await updateDoc(documentRef, { userLikes: arrayUnion(publisherId) })
+        setIsLiked(true)
+      }
+      else {
+        await updateDoc(documentRef, { userLikes: arrayRemove(publisherId) })
+        setIsLiked(false)
+      }  
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const toggleLike = async () => {
     try {
-      const docRef = doc(db, 'mixrCocktails', cocktailId)
-      /* const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))   
+      const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))
       const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => result.push(doc.data()) ) */
+      querySnapshot.forEach(document => updateLikes(document.id))
 
-      if (!isLiked) {
-        await updateDoc(docRef, { userLikes: arrayUnion(publisherId) })
-        setIsLiked(true)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const updateFavorites = async (documentId: string) => {
+    try {
+      const documentRef = doc(db, 'mixrUsers', documentId)
+    
+      if (!isFavorite) {
+        await updateDoc(documentRef, { favoriteCocktails: arrayUnion(cocktailId) })
+        setIsFavorite(true)
       } else {
-        await updateDoc(docRef, { userLikes: arrayRemove(publisherId) })
-        setIsLiked(false)
+        await updateDoc(documentRef, { favoriteCocktails: arrayRemove(cocktailId) })
+        setIsFavorite(false)
       }
     } catch (err) {
       console.error(err)
@@ -75,19 +100,10 @@ W  */
 
   const toggleFavorite = async () => {
     try {
-      const docRef = doc(db, 'mixrUsers', publisherId)
-      /* const q = query(collection(db, 'mixrCocktails'), where('id', '==', cocktailId))   
+      const q = query(collection(db, 'mixrUsers'), where('id', '==', user?.uid))
       const querySnapshot = await getDocs(q)
-      const result: any[] = []
-      querySnapshot.forEach(doc => result.push(doc.data()) ) */
+      querySnapshot.forEach(document => updateFavorites(document.id))
 
-      if (!isFavorite) {
-        await updateDoc(docRef, { favoriteCocktails: arrayUnion(cocktailId) })
-        setIsFavorite(true)
-      } else {
-        await updateDoc(docRef, { favoriteCocktails: arrayRemove(cocktailId) })
-        setIsFavorite(false)
-      }
     } catch (err) {
       console.error(err)
     }
@@ -97,6 +113,8 @@ W  */
     fetchCocktailData(cocktailId)
     fetchPublisherData(publisherId)
   }, [cocktailId, publisherId])
+
+  useEffect(() => { fetchCocktailData(cocktailId) }, [isLiked, isFavorite])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -160,7 +178,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 30
   },
   image: {
     width: 300,
@@ -184,12 +203,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     alignSelf: 'stretch',
-    paddingVertical: 10
+    paddingVertical: 10,
+    width: 400,
+    marginTop: 20,
+    marginBottom: 20
   },
   publisherInfoContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   publishedByText: {
     fontWeight: '600'
@@ -222,7 +244,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingLeft: 15,
-    paddingRight: 15
+    paddingRight: 15,
+    marginTop: 15,
+    marginBottom: 15
   },
   contentText: {
     fontSize: 20

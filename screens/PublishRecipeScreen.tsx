@@ -2,7 +2,7 @@ import { RootTabScreenProps } from '../types'
 import { useState, useRef } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc } from 'firebase/firestore'
 import { auth, db } from '../services/firebase.config'
 import { useAuthState } from 'react-firebase-hooks/auth'
 
@@ -11,6 +11,10 @@ import { ActivityIndicator, StyleSheet, Text, View, TouchableOpacity, Image, Saf
 import { Input } from 'react-native-elements'
 
 import { Ionicons } from '@expo/vector-icons'
+
+/* TODO:
+  - Scroll breaks when adding new elements (ingredients, steps, picture)
+*/
 
 export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'Publish a recipe'>) {
   
@@ -87,7 +91,7 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
   }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.preContainer}>
       {showLoader ? 
         <ActivityIndicator style={styles.loader} size='large' color='#E51C27' />
       :
@@ -126,54 +130,56 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
             null
           }
           
-          <Input
-            inputContainerStyle={styles.textInput}
-            placeholder='Ingredient ...'
-            errorStyle={{ color: 'red' }}
-            errorMessage={formHasErrors && !recipeIngredients ? 'Please provide the recipe ingredients' : undefined}
-            onChangeText={(text: string) => setIngredient(text)}
-            multiline = {true}
-            ref={ingredientInput}
-          />
+          <View style={styles.textInputContainer}>
+            <Input
+              inputContainerStyle={styles.textInput}
+              placeholder='Ingredient ...'
+              errorStyle={{ color: 'red' }}
+              errorMessage={formHasErrors && !recipeIngredients ? 'Please provide the recipe ingredients' : undefined}
+              onChangeText={(text: string) => setIngredient(text)}
+              ref={ingredientInput}
+            />
 
-          <TouchableOpacity onPress={() => {
-            if (ingredient) {
-              setRecipeIngredients([... recipeIngredients, ingredient])
-              ingredientInput.current?.clear()
-              setIngredient('')
-            }
-          }}>
-            <Ionicons name="add-circle" size={34} color="black" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              if (ingredient) {
+                setRecipeIngredients([... recipeIngredients, ingredient])
+                ingredientInput.current?.clear()
+                setIngredient('')
+              }
+            }}>
+              <Ionicons name='add-circle' size={34} color='black' style={styles.addIcon}/>
+            </TouchableOpacity>
+          </View>
           
           <Text style={styles.subtitle}>Recipe:</Text>
           {recipeSteps ?
-            <View style={styles.stepsContainer}>
+            <View>
               {recipeSteps.map((item, i) => <Text key={i} style={styles.steps}>{i+1}- {item}</Text>)}
             </View>
           :
             null
           }
 
-          <Input
-            inputContainerStyle={styles.textInput}
-            placeholder='Recipe step ...'
-            errorStyle={{ color: 'red' }}
-            errorMessage={formHasErrors && !recipeSteps ? 'Please provide the recipe steps' : undefined}
-            onChangeText={(text: string) => setStep(text)}
-            multiline = {true}
-            ref={stepInput}
-          />
+          <View style={styles.textInputContainer}>
+            <Input
+              inputContainerStyle={styles.textInput}
+              placeholder='Recipe step ...'
+              errorStyle={{ color: 'red' }}
+              errorMessage={formHasErrors && !recipeSteps ? 'Please provide the recipe steps' : undefined}
+              onChangeText={(text: string) => setStep(text)}
+              ref={stepInput}
+            />
 
-          <TouchableOpacity onPress={() => {
-            if (step) {
-              setRecipeSteps([... recipeSteps, step])
-              stepInput.current?.clear()
-              setStep('')
-            }
-          }}>
-            <Ionicons name="add-circle" size={34} color="black" />
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+              if (step) {
+                setRecipeSteps([... recipeSteps, step])
+                stepInput.current?.clear()
+                setStep('')
+              }
+            }}>
+              <Ionicons name='add-circle' size={34} color='black' />
+            </TouchableOpacity>
+          </View>
 
           { recipeImage ?
             <View style={styles.container}>
@@ -210,10 +216,13 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 }
 
 const styles = StyleSheet.create({
+  preContainer: {
+    flex:1
+  },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     fontSize: 26,
@@ -225,6 +234,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     margin: 10,
     fontWeight: 'bold'
+  },
+  textInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  addIcon: {
+    marginBottom: 10
   },
   textInput: {
     padding: 3,
@@ -265,15 +282,14 @@ const styles = StyleSheet.create({
   },
   ingredientsContainer: {
     flexWrap:'wrap',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   ingredients: {
     backgroundColor: '#DEDEDE',
     borderRadius: 5,
     padding: 5,
     margin: 5
-  },
-  stepsContainer: {
   },
   steps: {
     backgroundColor: '#DEDEDE',

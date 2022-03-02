@@ -28,7 +28,7 @@ const Navigation: React.FC = () => {
   /* TODO 
     - Configure log out
     - Style drawer navigator
-    - In drawer nagivator, make log out a button that doesn't redirect or redirects to homescreen
+    - In drawer nagivator, make log out a button that doesn't redirect or redirects to homescreen - Maybe redirect to landing screen and execute logout function on background?
     - When in cocktail detail screen, no option should be highlighted
     - On landing, register and login screens, drawer shouldn't open
    */
@@ -68,14 +68,14 @@ const Navigation: React.FC = () => {
 
         {!user ? (
           <Drawer.Screen
-            name="PublicStack"
+            name='PublicStack'
             component={loginStack}
-            // options={{headerShown: false}}
-            options={({ route }) => {
+            options={{headerShown: false}}
+            /* options={({ route }) => {
               const routeName = getFocusedRouteNameFromRoute(route)
-              if (routeName === "LandingScreen" || routeName === "LoginScreen" || routeName === "RegisterScreen") return ({swipeEnabled: false, gestureEnabled: false})
+              if (routeName === 'LandingScreen' || routeName === 'LoginScreen' || routeName === 'RegisterScreen') return ({swipeEnabled: false, gestureEnabled: false})
               else return ({swipeEnabled: true, gestureEnabled: true})
-          }} 
+            }}  */
           /> )
         :
         (<>
