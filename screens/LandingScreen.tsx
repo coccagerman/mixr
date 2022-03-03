@@ -3,7 +3,21 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { RootStackScreenProps } from '../types'
 import Martini from '../assets/images/martini.png'
 
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../services/firebase.config'
+import { getAuth, signOut } from 'firebase/auth'
+import { useEffect } from 'react'
+
 export default function LandingScreen({ navigation }: RootStackScreenProps<'LandingScreen'>) {
+
+  const [user] = useAuthState(auth as any)
+
+  useEffect(() => { if (user) logOut() }, [user])
+
+  const logOut = () => {
+    try { signOut(getAuth()) }
+    catch (err) { console.error(err) }
+  }
 
   return (
     <View style={styles.container}>
