@@ -29,12 +29,11 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
       fetchUserData(user)
       fetchPublishedRecipes(user)
     }
-  }, [userParam])
+  }, [userParam, publishedRecipes])
   
-  useEffect(() => { if (userData) fetchFavoriteCocktails(userData) },[userData])
+  useEffect(() => { if (userData) fetchFavoriteCocktails(userData) },[userData, favoriteCocktails])
 
   /* TODO
-    - Need to re fetch faves and recipes each time an item is added
     - Add edit option for about section
   */
 
