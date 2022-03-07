@@ -2,6 +2,9 @@ import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-naviga
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../services/firebase.config'
+
 import * as React from 'react'
 
 import LandingScreen from '../screens/LandingScreen'
@@ -17,10 +20,9 @@ import PublishedRecipesScreen from '../screens/PublishedRecipesScreen'
 
 import Header from '../components/Header'
 
-import { RootStackParamList, RootTabParamList } from '../types'
+import AuthContextProvider from '../context/AuthContextProvider'
 
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../services/firebase.config'
+import { RootStackParamList, RootTabParamList } from '../types'
 
 const Navigation: React.FC = () => {
 
@@ -36,11 +38,13 @@ const Navigation: React.FC = () => {
   const [user] = useAuthState(auth as any)
 
   const loginStack = () => (
-    <Stack.Navigator >
-      <Stack.Screen name='LandingScreen' component={LandingScreen} options={{headerShown: false}} />
-      <Stack.Screen name='LoginScreen' component={LoginScreen} options={{headerShown: false}} />
-      <Stack.Screen name='RegisterScreen' component={RegisterScreen} options={{headerShown: false}} />
-    </Stack.Navigator>
+    <AuthContextProvider>
+      <Stack.Navigator >
+        <Stack.Screen name='LandingScreen' component={LandingScreen} options={{headerShown: false}} />
+        <Stack.Screen name='LoginScreen' component={LoginScreen} options={{headerShown: false}} />
+        <Stack.Screen name='RegisterScreen' component={RegisterScreen} options={{headerShown: false}} />
+      </Stack.Navigator>
+    </AuthContextProvider>
   )
 
   return (
@@ -63,21 +67,21 @@ const Navigation: React.FC = () => {
             }}  */
           /> )
         :
-        (<>
-          <Drawer.Screen name='Search cocktails' component={HomeScreen} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Profile' component={ProfileScreen} initialParams={{ userParam: null }} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Publish a recipe' component={PublishRecipeScreen} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Favorites' component={FavoritesScreen} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Published recipes' component={PublishedRecipesScreen} options={{ header: () => <Header/> }} />
-          <Drawer.Screen name='Log out' component={loginStack} options={{ header: () => <Header/> }} />
-          
-          <Drawer.Screen name='CocktailDetailScreen' component={CocktailDetailScreen} options={{
-            header: () => <Header/>,
-            drawerLabel: () => null,
-            title: undefined
-          }} />
-        </>
-        )}
+          (<>
+            <Drawer.Screen name='Search cocktails' component={HomeScreen} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Profile' component={ProfileScreen} initialParams={{ userParam: null }} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Publish a recipe' component={PublishRecipeScreen} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Favorites' component={FavoritesScreen} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Published recipes' component={PublishedRecipesScreen} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Log out' component={loginStack} options={{ header: () => <Header/> }} />
+            
+            <Drawer.Screen name='CocktailDetailScreen' component={CocktailDetailScreen} options={{
+              header: () => <Header/>,
+              drawerLabel: () => null,
+              title: undefined
+            }} />
+          </>)
+        }
 
       </Drawer.Navigator>
     </NavigationContainer>

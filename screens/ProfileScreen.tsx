@@ -3,7 +3,7 @@ import {useRoute} from '@react-navigation/native'
 
 import ProfileContext from '../context/ProfileContext'
 
-import { RootTabScreenProps } from '../types'
+import { RootTabScreenProps, Cocktail } from '../types'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../services/firebase.config'
@@ -12,6 +12,9 @@ import { ActivityIndicator, StyleSheet, Text, View, SafeAreaView, ScrollView, Im
 import CocktailCard from '../components/home/cocktailCard/CocktailCard'
 import GenericAvatar from '../assets/images/genericAvatar.jpg'
 
+import { useSelector } from 'react-redux'
+import { RootState } from '../store/store'
+
 export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profile'>) {
 
   const route: any = useRoute()
@@ -19,7 +22,11 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
   
   const [user] = useAuthState(auth as any)
 
-  const {userData, favoriteCocktails, publishedRecipes, fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes} = useContext(ProfileContext)
+  const { fetchUserData, fetchFavoriteCocktails, fetchPublishedRecipes } = useContext(ProfileContext)
+
+  const userData = useSelector((state: RootState) => state.profile.userData)
+  const favoriteCocktails = useSelector((state: RootState) => state.favoriteCocktails.favoriteCocktails)
+  const publishedRecipes = useSelector((state: RootState) => state.publishedRecipes.publishedRecipes)
 
   useEffect(() => {
     if (userParam) {
@@ -61,9 +68,9 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
               {favoriteCocktails.length > 0 ?
                 <>
                   {favoriteCocktails.length > 4 ?
-                    favoriteCocktails.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    favoriteCocktails.slice(0,4).map((cocktail: Cocktail) => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
                     :
-                    favoriteCocktails.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    favoriteCocktails.map((cocktail: Cocktail) => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
                   }
 
                   <TouchableOpacity
@@ -85,9 +92,9 @@ export default function ProfileScreen({ navigation }: RootTabScreenProps<'Profil
               {publishedRecipes.length > 0 ?
                 <>
                   {publishedRecipes.length > 4 ?
-                    publishedRecipes.slice(0,4).map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    publishedRecipes.slice(0,4).map((cocktail: Cocktail) => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
                     :
-                    publishedRecipes.map(cocktail => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
+                    publishedRecipes.map((cocktail: Cocktail) => <CocktailCard key={cocktail.id} cocktail={cocktail} navigation={navigation} />)
                   }
 
                   <TouchableOpacity

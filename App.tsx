@@ -2,8 +2,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import useCachedResources from './hooks/useCachedResources'
 import Navigation from './navigation'
-import AuthContextProvider from './context/AuthContextProvider'
 import ProfileContextProvider from './context/ProfileContextProvider'
+
+import { Provider } from 'react-redux'
+import store from './store/store'
 
 export default function App() {
   const isLoadingComplete = useCachedResources()
@@ -12,13 +14,13 @@ export default function App() {
     return null
   } else {
     return (
-      <AuthContextProvider>
+      <Provider store={store}>
         <ProfileContextProvider>
           <SafeAreaProvider>
             <Navigation />
           </SafeAreaProvider>
         </ProfileContextProvider>
-      </AuthContextProvider>
+      </Provider>
     )
   }
 }

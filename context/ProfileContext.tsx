@@ -1,19 +1,13 @@
 import { createContext } from 'react'
-import {UserData , Cocktail} from '../types'
+import {UserData } from '../types'
 
 interface ProfileContext {
-    userData: UserData | null,
-    favoriteCocktails: Array<Cocktail> | null,
-    publishedRecipes: Array<Cocktail> | null,
     fetchUserData: (user: any) => Promise<void>,
     fetchFavoriteCocktails: (userData: UserData | null) => Promise<void>,
     fetchPublishedRecipes: (user: any) => Promise<void>,
 }
 
 const defaultState = {
-    userData: null,
-    favoriteCocktails: [],
-    publishedRecipes: [],
     fetchUserData: async (user: any) => {},
     fetchFavoriteCocktails: async (userData: UserData | null) => {},
     fetchPublishedRecipes: async (user: any) => {}
