@@ -5,6 +5,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../services/firebase.config'
 
+import AuthContextProvider from '../context/AuthContextProvider'
+
 import * as React from 'react'
 
 import LandingScreen from '../screens/LandingScreen'
@@ -20,15 +22,13 @@ import PublishedRecipesScreen from '../screens/PublishedRecipesScreen'
 
 import Header from '../components/Header'
 
-import AuthContextProvider from '../context/AuthContextProvider'
+import { AntDesign, Fontisto, MaterialIcons } from '@expo/vector-icons'
 
 import { RootStackParamList, RootTabParamList } from '../types'
 
 const Navigation: React.FC = () => {
 
   /* TODO:
-    - Style drawer navigator
-    - When in cocktail detail screen, no option should be highlighted
     - On landing, register and login screens, drawer shouldn't open
    */
 
@@ -51,7 +51,10 @@ const Navigation: React.FC = () => {
     <NavigationContainer>
       <Drawer.Navigator
       screenOptions={{
-        drawerStyle: { backgroundColor: 'white' },
+        drawerStyle: { backgroundColor: 'white', paddingTop: 40 },
+        drawerLabelStyle: { fontSize: 18, marginLeft: -20 },
+        drawerActiveBackgroundColor: '#FF7F7F',
+        drawerActiveTintColor: 'black',
         drawerPosition: 'right'
       }}>
 
@@ -68,17 +71,36 @@ const Navigation: React.FC = () => {
           /> )
         :
           (<>
-            <Drawer.Screen name='Search cocktails' component={HomeScreen} options={{ header: () => <Header/> }} />
-            <Drawer.Screen name='Profile' component={ProfileScreen} initialParams={{ userParam: null }} options={{ header: () => <Header/> }} />
-            <Drawer.Screen name='Publish a recipe' component={PublishRecipeScreen} options={{ header: () => <Header/> }} />
-            <Drawer.Screen name='Favorites' component={FavoritesScreen} options={{ header: () => <Header/> }} />
-            <Drawer.Screen name='Published recipes' component={PublishedRecipesScreen} options={{ header: () => <Header/> }} />
-            <Drawer.Screen name='Log out' component={loginStack} options={{ header: () => <Header/> }} />
+            <Drawer.Screen name='Search cocktails' component={HomeScreen} options={{ 
+                header: () => <Header/>,
+                drawerIcon: () => <AntDesign name='search1' size={24} color='black' /> 
+            }} />
+            <Drawer.Screen name='Profile' component={ProfileScreen} initialParams={{ userParam: null }} options={{
+              header: () => <Header/>,
+              drawerIcon: () => <AntDesign name='user' size={24} color='black' /> 
+            }} />
+            <Drawer.Screen name='Publish a recipe' component={PublishRecipeScreen} options={{
+              header: () => <Header/>,
+              drawerIcon: () => <Fontisto name='cocktail' size={24} color='black' />
+            }} />
+            <Drawer.Screen name='Favorites' component={FavoritesScreen} options={{
+              header: () => <Header/>,
+              drawerIcon: () => <MaterialIcons name='favorite' size={24} color='black' />
+            }} />
+            <Drawer.Screen name='Published recipes' component={PublishedRecipesScreen} options={{
+              header: () => <Header/>,
+              drawerIcon: () => <AntDesign name='profile' size={24} color='black' />
+            }} />
+            <Drawer.Screen name='Log out' component={loginStack}  options={{
+              header: () => <Header/>,
+              drawerIcon: () => <AntDesign name='logout' size={24} color='black' />
+            }} />
             
             <Drawer.Screen name='CocktailDetailScreen' component={CocktailDetailScreen} options={{
               header: () => <Header/>,
               drawerLabel: () => null,
-              title: undefined
+              title: undefined,
+              drawerActiveBackgroundColor: 'transparent'
             }} />
           </>)
         }
