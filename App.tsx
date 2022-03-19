@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler'
+
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 import useCachedResources from './hooks/useCachedResources'
@@ -8,6 +10,7 @@ import { Provider } from 'react-redux'
 import store from './store/store'
 
 export default function App() {
+
   const isLoadingComplete = useCachedResources()
 
   if (!isLoadingComplete) {

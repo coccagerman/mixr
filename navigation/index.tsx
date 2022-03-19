@@ -63,6 +63,7 @@ const Navigation: React.FC = () => {
             name='PublicStack'
             component={loginStack}
             options={{headerShown: false}}
+            
             /* options={({ route }) => {
               const routeName = getFocusedRouteNameFromRoute(route)
               if (routeName === 'LandingScreen' || routeName === 'LoginScreen' || routeName === 'RegisterScreen') return ({swipeEnabled: false, gestureEnabled: false})
