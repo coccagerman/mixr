@@ -29,7 +29,6 @@ export default function HomeScreen({ navigation }: RootTabScreenProps<'Search co
   useEffect(() => { fetchCocktails() }, [])
 
   /* TODO - Should refetch content each time the page is rendered */
-  /* TODO - Infinite scroll? */
 
   return (
     <View style={styles.container}>

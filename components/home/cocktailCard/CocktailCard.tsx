@@ -19,7 +19,7 @@ const Searchbar: React.FC<Props> = ({ cocktail, navigation }) => {
         
         <View style={styles.likesContainer} >
             <AntDesign name='like1' size={20} color='black' />
-            <Text style={styles.likesCount}>{cocktail.userLikes ? cocktail.userLikes.length : null}</Text>
+            <Text style={styles.likesCount}>{cocktail.userLikes && cocktail.userLikes.length}</Text>
         </View>
     </TouchableOpacity>
   )
