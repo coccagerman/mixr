@@ -1,10 +1,14 @@
 {
   "expo": {
-    "name": "mixr",
+    "name": "Mixr",
     "slug": "mixr",
     "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/appIcon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -23,9 +27,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/images/appIcon.png",
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "CAMERA"
+        ]
+      },
+      "package": "com.coccagerman.mixr"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
