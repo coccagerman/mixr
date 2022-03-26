@@ -12,10 +12,6 @@ import { Input } from 'react-native-elements'
 
 import { Ionicons } from '@expo/vector-icons'
 
-/* TODO:
-  - Scroll breaks when adding new elements (ingredients, steps, picture)
-*/
-
 export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'Publish a recipe'>) {
   
   const [user] = useAuthState(auth as any)
@@ -181,16 +177,12 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
             </TouchableOpacity>
           </View>
 
-          { recipeImage ?
-            <View style={styles.container}>
-              <Image
-                source={{ uri: recipeImage.localUri }}
-                style={styles.thumbnail}
-              />
-            </View>
-            :
-            null
-          }
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: recipeImage?.localUri }}
+              style={styles.thumbnail}
+            />
+          </View>
 
           <TouchableOpacity onPress={openImagePickerAsync} style={[styles.btn, styles.btnSecondary]}>
             <Text style={styles.btnText}>Pick a photo</Text>
@@ -217,13 +209,16 @@ export default function PublishRecipeScreen({ navigation }: RootTabScreenProps<'
 
 const styles = StyleSheet.create({
   preContainer: {
-    flex:1
+    flex:1,
+    marginTop: 10,
+    marginBottom: 10,
   },
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   title: {
     fontSize: 26,
     marginTop: 20,
@@ -273,12 +268,22 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 22
   },
+  imageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 200,
+    marginTop: 50,
+    marginBottom: 50,
+  },
   thumbnail: {
     width: 120,
     height: 120,
     resizeMode: 'contain',
     borderRadius: 10,
-    marginTop: 10
+    marginTop: 50,
+    marginBottom: 50
   },
   ingredientsContainer: {
     flexWrap:'wrap',
