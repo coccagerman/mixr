@@ -1,4 +1,4 @@
-import { NavigationContainer, getFocusedRouteNameFromRoute } from '@react-navigation/native'
+import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 
@@ -27,10 +27,6 @@ import { AntDesign, Fontisto, MaterialIcons } from '@expo/vector-icons'
 import { RootStackParamList, RootTabParamList } from '../types'
 
 const Navigation: React.FC = () => {
-
-  /* TODO:
-    - On landing, register and login screens, drawer shouldn't open
-   */
 
   const Stack = createNativeStackNavigator<RootStackParamList>()
   const Drawer = createDrawerNavigator<RootTabParamList>()
@@ -63,12 +59,6 @@ const Navigation: React.FC = () => {
             name='PublicStack'
             component={loginStack}
             options={{headerShown: false}}
-            
-            /* options={({ route }) => {
-              const routeName = getFocusedRouteNameFromRoute(route)
-              if (routeName === 'LandingScreen' || routeName === 'LoginScreen' || routeName === 'RegisterScreen') return ({swipeEnabled: false, gestureEnabled: false})
-              else return ({swipeEnabled: true, gestureEnabled: true})
-            }}  */
           /> )
         :
           (<>
