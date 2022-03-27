@@ -33,7 +33,7 @@ const Navigation: React.FC = () => {
 
   const [user] = useAuthState(auth as any)
 
-  const loginStack = () => (
+  const LoginStack = () => (
     <AuthContextProvider>
       <Stack.Navigator >
         <Stack.Screen name='LandingScreen' component={LandingScreen} options={{headerShown: false}} />
@@ -57,7 +57,7 @@ const Navigation: React.FC = () => {
         {!user ? (
           <Drawer.Screen
             name='PublicStack'
-            component={loginStack}
+            component={LoginStack}
             options={{headerShown: false}}
           /> )
         :
@@ -82,7 +82,7 @@ const Navigation: React.FC = () => {
               header: () => <Header/>,
               drawerIcon: () => <AntDesign name='profile' size={24} color='black' />
             }} />
-            <Drawer.Screen name='Log out' component={loginStack}  options={{
+            <Drawer.Screen name='Log out' component={LoginStack}  options={{
               header: () => <Header/>,
               drawerIcon: () => <AntDesign name='logout' size={24} color='black' />
             }} />
