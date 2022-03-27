@@ -28,11 +28,9 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/appIcon.png",
-        "backgroundColor": "#ffffff",
-        "permissions": [
-          "CAMERA"
-        ]
+        "backgroundColor": "#ffffff"
       },
+      "permissions": ["CAMERA"],
       "package": "com.coccagerman.mixr"
     },
     "web": {
